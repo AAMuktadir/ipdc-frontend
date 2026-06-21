@@ -145,7 +145,8 @@ export default {
   },
 
   axios: {
-    baseUrl: "http://localhost/api/api/v1/",
+    // baseUrl: "http://localhost/api/api/v1/",
+    baseUrl: "https://ipdc.com/api/api/v1/",
   },
 
   pwa: {
