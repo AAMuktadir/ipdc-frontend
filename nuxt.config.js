@@ -2,6 +2,7 @@ export default {
   debug: false,
   target: "static",
   generate: {
+    dir: "dist",
     fallback: "404.html",
   },
 
