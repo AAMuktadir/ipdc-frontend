@@ -1,0 +1,437 @@
+<template>
+  <section class="container">
+    <div class="best-fits">
+      <div class="best-fits-heading" v-if="bestFitHeading">
+        <h1 class="best-fits-heading-title">
+          {{
+            $i18n.locale == "en"
+              ? bestFitHeading.title
+              : bestFitHeading.title_bangla
+          }}
+        </h1>
+        <p class="best-fits-heading-description">
+          {{
+            $i18n.locale == "en"
+              ? bestFitHeading.sub_title
+              : bestFitHeading.sub_title_bangla
+          }}
+        </p>
+      </div>
+
+      <div v-if="depositSchemePackage.length > 0">
+        <client-only>
+          <carousel
+            :nav="false"
+            :margin="20"
+            :autoplay="true"
+            :responsive="{
+              0: { items: 1, nav: false },
+              600: { items: 3, nav: false },
+              1024: { items: 4, nav: false },
+            }"
+          >
+            <div
+              v-for="singlePackage in depositSchemePackage"
+              :key="singlePackage.id"
+              class="profit-schemes"
+            >
+              <div class="annual-profit">
+                <div class="annual-profit-heading">
+                  <p>
+                    {{
+                      $i18n.locale == "en"
+                        ? singlePackage.name
+                        : singlePackage.name_bangla
+                    }}
+                  </p>
+                  <h4>
+                    {{
+                      $i18n.locale == "en"
+                        ? singlePackage.short_name
+                        : singlePackage.short_name_bangla
+                    }}
+                  </h4>
+                </div>
+                <div v-if="$i18n.locale == 'en'" class="minimum-deposit">
+                  <h1>৳ {{ singlePackage.minimum_deposit_amount }}</h1>
+                  <p>Minimum Deposit</p>
+                </div>
+                <div v-if="$i18n.locale == 'bn'" class="minimum-deposit">
+                  <h1>৳ {{ singlePackage.minimum_deposit_amount_bangla }}</h1>
+                  <p>ন্যূনতম জমা</p>
+                </div>
+                <div v-if="$i18n.locale == 'en'" class="minimum-tenure">
+                  <div class="minimum-tenure-details">
+                    <p>Minimum Tenure</p>
+                    <h5>{{ singlePackage.minimum_tenure }}</h5>
+                  </div>
+                  <div class="minimum-tenure-details">
+                    <p>Mode of Interest</p>
+                    <h5>
+                      {{ singlePackage.mode_of_interest }}
+                    </h5>
+                  </div>
+                  <div class="minimum-tenure-details">
+                    <p>Renewal</p>
+                    <h5>
+                      {{ singlePackage.renewal }}
+                    </h5>
+                  </div>
+                </div>
+                <div v-if="$i18n.locale == 'bn'" class="minimum-tenure">
+                  <div class="minimum-tenure-details">
+                    <p>ন্যূনতম মেয়াদ</p>
+                    <h5>{{ singlePackage.minimum_tenure_bangla }}</h5>
+                  </div>
+                  <div class="minimum-tenure-details">
+                    <p>আগ্রহের প্রকার</p>
+                    <h5>
+                      {{ singlePackage.mode_of_interest_bangla }}
+                    </h5>
+                  </div>
+                  <div class="minimum-tenure-details">
+                    <p>নবায়ন</p>
+                    <h5>
+                      {{ singlePackage.renewal_bangla }}
+                    </h5>
+                  </div>
+                </div>
+                <div v-if="$i18n.locale == 'en'" class="annual-profit-button">
+                  <a href="/customer-signup" target="_blank"
+                    >Apply Now
+                    <svg
+                      viewBox="0 0 26 27"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M25.33 12.6925C25.2289 12.4317 25.0772 12.1933 24.8837 11.9912L14.2588 1.36625C14.0606 1.16812 13.8254 1.01095 13.5665 0.903721C13.3077 0.796493 13.0302 0.741302 12.75 0.741302C12.1841 0.741302 11.6414 0.966102 11.2412 1.36625C11.0431 1.56438 10.886 1.7996 10.7787 2.05847C10.6715 2.31734 10.6163 2.5948 10.6163 2.875C10.6163 3.44089 10.8411 3.9836 11.2412 4.38375L18.2538 11.375H2.125C1.56141 11.375 1.02091 11.5989 0.622398 11.9974C0.223884 12.3959 0 12.9364 0 13.5C0 14.0636 0.223884 14.6041 0.622398 15.0026C1.02091 15.4011 1.56141 15.625 2.125 15.625H18.2538L11.2412 22.6162C11.0421 22.8138 10.884 23.0488 10.7761 23.3078C10.6682 23.5667 10.6127 23.8445 10.6127 24.125C10.6127 24.4055 10.6682 24.6833 10.7761 24.9422C10.884 25.2012 11.0421 25.4362 11.2412 25.6337C11.4388 25.8329 11.6738 25.991 11.9328 26.0989C12.1917 26.2068 12.4695 26.2623 12.75 26.2623C13.0305 26.2623 13.3083 26.2068 13.5672 26.0989C13.8262 25.991 14.0612 25.8329 14.2588 25.6337L24.8837 15.0087C25.0772 14.8067 25.2289 14.5683 25.33 14.3075C25.5425 13.7901 25.5425 13.2099 25.33 12.6925Z"
+                        fill="#ED017F"
+                      />
+                    </svg>
+                  </a>
+                </div>
+                <div v-if="$i18n.locale == 'bn'" class="annual-profit-button">
+                  <a href="/customer-signup" target="_blank"
+                    >আবেদন করুন
+                    <svg
+                      viewBox="0 0 26 27"
+                      fill="none"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="M25.33 12.6925C25.2289 12.4317 25.0772 12.1933 24.8837 11.9912L14.2588 1.36625C14.0606 1.16812 13.8254 1.01095 13.5665 0.903721C13.3077 0.796493 13.0302 0.741302 12.75 0.741302C12.1841 0.741302 11.6414 0.966102 11.2412 1.36625C11.0431 1.56438 10.886 1.7996 10.7787 2.05847C10.6715 2.31734 10.6163 2.5948 10.6163 2.875C10.6163 3.44089 10.8411 3.9836 11.2412 4.38375L18.2538 11.375H2.125C1.56141 11.375 1.02091 11.5989 0.622398 11.9974C0.223884 12.3959 0 12.9364 0 13.5C0 14.0636 0.223884 14.6041 0.622398 15.0026C1.02091 15.4011 1.56141 15.625 2.125 15.625H18.2538L11.2412 22.6162C11.0421 22.8138 10.884 23.0488 10.7761 23.3078C10.6682 23.5667 10.6127 23.8445 10.6127 24.125C10.6127 24.4055 10.6682 24.6833 10.7761 24.9422C10.884 25.2012 11.0421 25.4362 11.2412 25.6337C11.4388 25.8329 11.6738 25.991 11.9328 26.0989C12.1917 26.2068 12.4695 26.2623 12.75 26.2623C13.0305 26.2623 13.3083 26.2068 13.5672 26.0989C13.8262 25.991 14.0612 25.8329 14.2588 25.6337L24.8837 15.0087C25.0772 14.8067 25.2289 14.5683 25.33 14.3075C25.5425 13.7901 25.5425 13.2099 25.33 12.6925Z"
+                        fill="#ED017F"
+                      />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </carousel>
+        </client-only>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script>
+export default {
+  props: {
+    depositSchemePackage: {
+      type: Array,
+      default: () => [],
+    },
+
+    bestFitHeading: {
+      type: Object,
+      default: {},
+    },
+  },
+};
+</script>
+
+<style lang="scss" scoped>
+.best-fits {
+  &-heading {
+    padding: 80px;
+    text-align: center;
+
+    &-title {
+      font-weight: bold;
+      font-size: 36px;
+      line-height: 133%;
+      color: #343434;
+      .font-bn & {
+        font-size: 41px;
+      }
+    }
+
+    &-description {
+      font-size: 16px;
+      line-height: 154.3%;
+      color: #858585;
+      padding: 15px 120px;
+      .font-bn & {
+        font-size: 21px;
+      }
+    }
+  }
+
+  .profit-schemes {
+    padding: 0 0 80px 0;
+
+    .annual-profit {
+      overflow: hidden;
+      background: #ffffff;
+      box-shadow: 2.98772px 2.98772px 43.3219px rgba(0, 0, 0, 0.07);
+      border-radius: 7.46929px;
+
+      &-heading {
+        text-align: center;
+        padding: 20px 34px;
+        background: #e6f7f0;
+
+        p {
+          font-size: 12px;
+          line-height: 100%;
+          text-transform: uppercase;
+          letter-spacing: 2px;
+          color: #343434;
+          min-height: 30px;
+          .font-bn & {
+            font-size: 17px;
+          }
+        }
+
+        h4 {
+          font-weight: bold;
+          font-size: 20px;
+          line-height: 100%;
+          color: #343434;
+          padding: 10px;
+          .font-bn & {
+            font-size: 25px;
+          }
+        }
+      }
+
+      .minimum-deposit {
+        padding: 35px 0;
+        text-align: center;
+        border-bottom: 1.5px solid #f3f3f3;
+
+        h1 {
+          font-weight: bold;
+          font-size: 30px;
+          line-height: 133%;
+          color: #ed017f;
+          padding-bottom: 5px;
+          .font-bn & {
+            font-size: 35px;
+          }
+        }
+
+        p {
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 100%;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #343434;
+          .font-bn & {
+            font-size: 19px;
+          }
+        }
+      }
+
+      .minimum-tenure {
+        text-align: center;
+        // padding-bottom: 30px;
+        border-bottom: 1.5px solid #f3f3f3;
+
+        &-details {
+          padding: 35px 0 30px 0;
+
+          p {
+            font-size: 12px;
+            line-height: 100%;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #858585;
+            padding-bottom: 5px;
+            .font-bn & {
+              font-size: 17px;
+            }
+          }
+
+          h5 {
+            font-size: 16px;
+            line-height: 154.3%;
+            color: #343434;
+            min-height: 50px;
+            padding: 0 5px;
+            .font-bn & {
+              font-size: 21px;
+            }
+          }
+        }
+      }
+
+      .annual-profit-button {
+        text-align: center;
+        padding: 30px 0;
+
+        a {
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 14px;
+          line-height: 100%;
+          letter-spacing: 2px;
+          text-transform: uppercase;
+          color: #ed017f;
+          .font-bn & {
+            font-size: 19px;
+          }
+          svg {
+            width: 20px;
+            height: 14px;
+            margin: -6px 0 0 0;
+          }
+          &:hover {
+            font-size: 14.5px;
+            color: #ff0088d3;
+            .font-bn & {
+              font-size: 19.5px;
+            }
+          }
+        }
+      }
+      &:hover {
+        .annual-profit-button {
+          a {
+            svg {
+              animation: move 0.4s infinite linear alternate;
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+@keyframes move {
+  0% {
+    transform: translate(-4px);
+  }
+  100% {
+    transform: translate(4px);
+  }
+}
+@media screen and (max-width: 1024px) {
+  .best-fits {
+    // &-heading {
+    //   &-title {
+    //   }
+
+    //   &-description {
+    //   }
+    // }
+
+    .profit-schemes {
+      .annual-profit {
+        &-heading {
+          min-height: 140px;
+
+          // p {
+          // }
+
+          // h4 {
+          // }
+        }
+
+        // .minimum-deposit {
+        //   h1 {
+        //   }
+
+        //   p {
+        //   }
+        // }
+
+        .minimum-tenure {
+          &-details {
+            min-height: 190px;
+
+            // p {
+            // }
+
+            // h5 {
+            // }
+          }
+        }
+
+        // .annual-profit-button {
+        //   a {
+        //     svg {
+        //     }
+        //     &:hover {
+        //     }
+        //   }
+        // }
+        // &:hover {
+        //   .annual-profit-button {
+        //     a {
+        //       svg {
+        //       }
+        //     }
+        //   }
+        // }
+      }
+    }
+  }
+}
+@media screen and (max-width: 768px) {
+  .best-fits {
+    &-heading {
+      padding: 50px 0;
+
+      &-title {
+        font-size: 25px;
+        .font-bn & {
+          font-size: 30px;
+        }
+      }
+
+      &-description {
+        padding: 28px 0;
+      }
+    }
+
+    .profit-schemes {
+      padding: 0 0 80px 0;
+
+      // .annual-profit {
+      //   &-heading {
+      //   }
+
+      //   .minimum-deposit {
+      //   }
+      // }
+    }
+  }
+}
+
+.font-bn .best-fits .profit-schemes .annual-profit-heading p {
+  letter-spacing: 0;
+}
+
+.font-bn .best-fits .profit-schemes .annual-profit .minimum-deposit p {
+  letter-spacing: 0;
+}
+.font-bn .best-fits .profit-schemes .annual-profit .minimum-tenure-details p {
+  letter-spacing: 0;
+}
+.font-bn .best-fits .profit-schemes .annual-profit .annual-profit-button a {
+  letter-spacing: 0;
+}
+</style>

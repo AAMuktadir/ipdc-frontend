@@ -1,0 +1,33 @@
+@font-face {
+    font-family: 'SolaimanLipi';
+    src: url('SolaimanLipiNormal.woff2') format('woff2'),
+        url('SolaimanLipiNormal.woff') format('woff'),
+        url('SolaimanLipiNormal.ttf') format('truetype'),
+        url('SolaimanLipiNormal.svg#SolaimanLipiNormal') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SolaimanLipi';
+    src: url('SolaimanLipi-Bold.woff2') format('woff2'),
+        url('SolaimanLipi-Bold.woff') format('woff'),
+        url('SolaimanLipi-Bold.ttf') format('truetype'),
+        url('SolaimanLipi-Bold.svg#SolaimanLipi-Bold') format('svg');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'SolaimanLipi';
+    src: url('SolaimanLipi.woff2') format('woff2'),
+        url('SolaimanLipi.woff') format('woff'),
+        url('SolaimanLipi.ttf') format('truetype'),
+        url('SolaimanLipi.svg#SolaimanLipi') format('svg');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
