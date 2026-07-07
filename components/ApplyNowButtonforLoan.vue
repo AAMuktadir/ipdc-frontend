@@ -3,13 +3,13 @@
     <div class="container">
       <div class="term-amount">
         <div class="term-amount-title" v-if="termAmountHeading">
-          <h1>
+          <h2>
             {{
               $i18n.locale == "en"
                 ? termAmountHeading.title
                 : termAmountHeading.title_bangla
             }}
-          </h1>
+          </h2>
           <p v-if="$i18n.locale == 'en' && termAmountHeading.sub_title">
             {{ termAmountHeading.sub_title }}
           </p>
@@ -87,7 +87,7 @@ export default {
     .term-amount-title {
       text-align: center;
       margin-bottom: 35px;
-      h1 {
+      h2 {
         font-weight: bold;
         font-size: 36px;
         line-height: 133%;
@@ -171,7 +171,7 @@ export default {
       .term-amount-title {
         text-align: center;
         margin-bottom: 50px;
-        h1 {
+        h2 {
           font-size: 25px;
         }
         p {

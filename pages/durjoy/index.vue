@@ -17,33 +17,41 @@
       :loanRequiredDocuments="autoLoanRequiredDocuments"
       :documentsRequiredHeading="documentsRequiredHeading"
     />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
     />
     <Faqs :page="page" />
-    <!-- <OngoingCampaigns :page="page" /> -->
-    <!-- <DownloadApplicationform
-      :page="page"
-      :footerApplicationForm="autoLoanFooterApplicationForm"
-    /> -->
   </div>
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "durjoy");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
       cover: {
         title: "Durjoy",
-        title_bangla: "দুর্জয়",
+        title_bangla: "দুর্জয়",
       },
       offerHeading: {},
       purposeHeading: {},
@@ -83,10 +91,9 @@ export default {
   methods: {
     async loanContent() {
       try {
+        // Live backend endpoint (routes/api.php -> DurjoyController@getDurjoyPageData)
         const response = await this.$axios.get(
-          // `/get-durjoy-content/${this.page}`
-          // "http://localhost:8000/get-durjoy-content.php"
-          `https://ipdc.com/demo/api/get-durjoy-content.php`
+          `/get-durjoy-content/${this.page}`
         );
         this.autoLoanWhatWeOfferCards =
           response.data.data.autoLoanWhatWeOfferCard;
@@ -110,13 +117,6 @@ export default {
           this.purposeHeading = resHeading.auto_loan_pupose_heading[0];
         }
 
-        if (resHeading.auto_loan_pupose_heading) {
-          this.purposeHeading = resHeading.auto_loan_pupose_heading[0];
-        }
-        if (resHeading.auto_loan_pupose_heading) {
-          this.purposeHeading = resHeading.auto_loan_pupose_heading[0];
-        }
-
         if (resHeading.auto_loan_eligibility_heading) {
           this.eligibleHeading = resHeading.auto_loan_eligibility_heading[0];
         }
@@ -133,8 +133,6 @@ export default {
         if (resHeading.auto_loan_conditions_heading) {
           this.conditionsHeading = resHeading.auto_loan_conditions_heading[0];
         }
-
-        // console.log(this.loanConditions);
       } catch (error) {
         console.log("Error fetching loanContent:", error);
       }

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div :class="[$i18n.locale == 'bn' ? 'font-bn' : '']">
     <Nuxt />
     <div class="applyOnlineSideButton">
       <div class="formslink" :class="$i18n.locale === 'bn' ? 'bangla' : ''">
@@ -142,6 +142,29 @@ export default {
       &:hover {
         color: #9b9c9d;
       }
+    }
+  }
+}
+
+/* ---- Mobile-only refinement: thinner buttons + smaller text ---- */
+/* Affects ONLY the side buttons on small screens. Desktop view is unchanged. */
+@media (max-width: 767px) {
+  .applyOnlineSideButton {
+    .applyOnlinelink,
+    .a2gflink,
+    .formslink {
+      height: 24px;
+      line-height: 24px;
+      font-size: 13px;
+    }
+
+    .applyOnlinelink.bangla,
+    .formslink.bangla {
+      font-size: 17px;
+    }
+
+    .a2gflink.bangla {
+      font-size: 13px;
     }
   }
 }

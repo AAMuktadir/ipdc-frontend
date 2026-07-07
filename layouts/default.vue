@@ -12,6 +12,20 @@
       @loanMenuToggle="loanMenuToggler()"
       @closeMenu="closeMenu()"
     />
+    <div class="playWithIPDCSideButton">
+      <div class="playLink">
+        <span
+          ><a
+            href="https://playwithipdc.ipdc.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            >{{
+              $i18n.locale == "en" ? "Play With IPDC ⚽" : "Play With IPDC ⚽"
+            }}</a
+          ></span
+        >
+      </div>
+    </div>
     <div class="applyOnlineSideButton">
       <div class="formslink" :class="$i18n.locale === 'bn' ? 'bangla' : ''">
         <nuxt-link :to="localePath('/all-forms')">
@@ -80,14 +94,51 @@ export default {
     const siteName = locales[currentLocale];
 
     return {
-      titleTemplate: (titleChunk) =>
-        titleChunk ? `${siteName} - ${titleChunk}` : siteName,
+      titleTemplate: "%s",
     };
   },
 };
 </script>
 
 <style lang="scss" scoped>
+.playWithIPDCSideButton {
+  position: fixed;
+  top: 50%;
+  z-index: 999;
+  left: 0;
+
+  .playLink {
+    background-color: #ed017f;
+    bottom: 0;
+    color: #fff;
+    cursor: pointer;
+    font-size: 16px;
+    height: 30px;
+    margin-top: 28px;
+    text-align: center;
+    transform: rotate(-90deg);
+    width: 200px;
+    position: absolute;
+    left: -85px;
+    border-top: 0 solid #0ef27c;
+    font-weight: 400;
+    text-transform: uppercase;
+    border-radius: 0 0 5px 5px;
+
+    span {
+      margin-left: 5px;
+      a {
+        color: #fff;
+        text-decoration: none;
+        outline: 0 !important;
+
+        &:hover {
+          color: #9b9c9d;
+        }
+      }
+    }
+  }
+}
 .applyOnlineSideButton {
   position: fixed;
   top: calc(50vh + 195px - 5%);
@@ -195,6 +246,37 @@ export default {
       &:hover {
         color: #9b9c9d;
       }
+    }
+  }
+}
+
+/* ---- Mobile-only refinement: thinner buttons + smaller text ---- */
+/* Affects ONLY the side buttons on small screens. Desktop view is unchanged. */
+@media (max-width: 767px) {
+  .playWithIPDCSideButton {
+    .playLink {
+      height: 24px;
+      line-height: 24px;
+      font-size: 13px;
+    }
+  }
+
+  .applyOnlineSideButton {
+    .applyOnlinelink,
+    .a2gflink,
+    .formslink {
+      height: 24px;
+      line-height: 24px;
+      font-size: 13px;
+    }
+
+    .applyOnlinelink.bangla,
+    .formslink.bangla {
+      font-size: 17px;
+    }
+
+    .a2gflink.bangla {
+      font-size: 13px;
     }
   }
 }

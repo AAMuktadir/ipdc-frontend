@@ -2,7 +2,6 @@
   <div>
     <CoverImageWithButton :page="page" />
     <CoverImageWithLink :coverImage="coverImageLink" />
-    <!--    <SmeBestFits :smeScheme="smeScheme" :defaultScheme="defaultScheme"/>-->
     <CorporateBestFits
       :corporateScheme="smeScheme"
       :defaultScheme="defaultScheme"
@@ -20,7 +19,6 @@
     />
 
     <OngoingCampaigns :page="page" />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
@@ -34,12 +32,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "ipdc-sme");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -70,7 +82,7 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title: "Turn your business plans into progress with quick SME support",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",

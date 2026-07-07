@@ -1,17 +1,9 @@
 <template>
   <nav class="sticky-nav" :class="{ 'is-scrolled': isScrolled }">
     <div class="nav-wrapper">
-      <!-- <div class="logo-container" @click="scrollTo('hero')">
-        <img src="~/assets/image/logo/Logo.svg" alt="IPDC Logo" class="logo" />
-      </div> -->
-
       <div class="logo-container">
         <nuxt-link class="logo_ipdc" :to="localePath('/')" style="opacity: 1">
-          <img
-            src="~/assets/image/logo/Logo.svg"
-            alt="IPDC Logo"
-            class="logo"
-          />
+          <img src="/logo/Logo.svg" alt="IPDC Logo" class="logo" />
         </nuxt-link>
       </div>
 
@@ -27,9 +19,22 @@
       </div>
 
       <div class="nav-actions">
-        <!-- <button class="apply-btn desktop-only" @click="goToSignup">
-          Apply Now
-        </button> -->
+        <div class="language-switcher desktop-only">
+          <nuxt-link
+            v-if="$i18n.locale !== 'bn'"
+            :to="switchLocalePath('bn')"
+            class="lang-btn font-bn"
+          >
+            বাংলা
+          </nuxt-link>
+          <nuxt-link
+            v-if="$i18n.locale !== 'en'"
+            :to="switchLocalePath('en')"
+            class="lang-btn"
+          >
+            English
+          </nuxt-link>
+        </div>
 
         <div
           class="menu-toggle"
@@ -54,9 +59,22 @@
           >
             {{ item.label }}
           </a>
-          <!-- <button class="apply-btn mobile-apply" @click="goToSignup">
-            Apply Now
-          </button> -->
+          <div class="apply-btn mobile-apply">
+            <nuxt-link
+              v-if="$i18n.locale !== 'bn'"
+              :to="switchLocalePath('bn')"
+              class="lang-btn font-bn"
+            >
+              বাংলা
+            </nuxt-link>
+            <nuxt-link
+              v-if="$i18n.locale !== 'en'"
+              :to="switchLocalePath('en')"
+              class="lang-btn"
+            >
+              English
+            </nuxt-link>
+          </div>
         </div>
       </div>
     </transition>
@@ -74,10 +92,6 @@ export default {
       items: [
         { id: "hero", label: "Overview" },
         { id: "card", label: "Cards" },
-        // { id: "jagoo-card", label: "Jagoo" },
-        // { id: "elite-card", label: "Elite" },
-        // { id: "joyee-card", label: "Joyee" },
-        // { id: "infinite-card", label: "Infinite" },
         { id: "benefits", label: "Offers" },
         { id: "terms-section", label: "Terms" },
         { id: "faq-section", label: "FAQ" },
@@ -168,6 +182,51 @@ export default {
 .nav-links {
   display: flex;
   gap: 30px;
+}
+
+.nav-actions {
+  display: flex;
+}
+
+.language-switcher {
+  background-color: #d9dbe9;
+  border-radius: 100px;
+  display: flex;
+  padding: 0;
+  margin: 0 0 0 0;
+}
+
+.language-switcher .lang-btn {
+  height: 32px;
+  padding: 8px 0;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  border: none;
+  border-radius: 100px;
+  background: transparent;
+  cursor: pointer;
+  text-decoration: none;
+  color: #4e4b66;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 4.5vw;
+}
+.language-switcher .lang-btn .font-bn {
+  letter-spacing: 0.55px;
+  font-size: 12px;
+}
+
+.language-switcher .lang-btn:hover {
+  color: #ffffff;
+  background: #ff0088;
+  transition: 0.15s all ease-in-out;
+}
+
+.language-switcher .lang-btn .active {
+  background-color: #ed017f;
+  color: #ffffff;
 }
 
 a {

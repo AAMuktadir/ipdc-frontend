@@ -215,6 +215,16 @@
         <ul>
           <!-- <li><h4>Others</h4></li> -->
           <li @click="$emit('close')">
+            <nuxt-link :to="localePath('/ez-app')">
+              {{
+                $i18n.locale == "en" ? "IPDC EZ App" : "IPDC EZ App"
+              }}
+              <div class="circle">
+                <img src="~assets/image/right.png" alt="Right" />
+              </div>
+            </nuxt-link>
+          </li>
+          <li @click="$emit('close')">
             <nuxt-link :to="localePath('/campaign')">
               <!-- <h4 v-if="$i18n.locale == 'en'">Ongoing Campaigns</h4>
               <h4 v-if="$i18n.locale == 'bn'">চলমান ক্যাম্পেইন</h4> -->

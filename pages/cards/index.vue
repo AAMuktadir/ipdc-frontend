@@ -16,7 +16,10 @@
     <div id="smooth-wrapper">
       <div id="smooth-content">
         <HeroSection />
-        <CardReveal :features="keyFeatures" />
+        <CardReveal
+          :features="keyFeatures"
+          :features_bangla="keyFeatures_bangla"
+        />
 
         <BenefitsSection />
 
@@ -26,7 +29,7 @@
         </client-only>
 
         <TermsGrid />
-        <FaqSection :faqs="faqs" />
+        <FaqSection />
         <Footer />
       </div>
     </div>
@@ -62,21 +65,6 @@ export default {
     FaqSection,
     OfferMap,
   },
-  async asyncData({ $axios }) {
-    try {
-      const faqsRes = await $axios.get("/get-faqs/cards");
-
-      return {
-        faqs: faqsRes.data?.data || [],
-      };
-    } catch (error) {
-      console.error("SSR fetch FAQ failed:", error);
-
-      return {
-        faqs: [],
-      };
-    }
-  },
   data() {
     return {
       cover: {
@@ -94,6 +82,15 @@ export default {
         "Savings on diagnostic services, hospitals, fitness centers, pharmacies, and wellness providers.",
         "Attractive discounts on consumer electronics, gadgets, and household appliances from partner retailers.",
         "Discounts on air tickets, travel agencies, tour packages, and related travel services.",
+      ],
+      keyFeatures_bangla: [
+        "আমাদের সিলেক্ট করা নির্দিষ্ট সব রেস্ট্যুর‍্যন্ট ও ক্যাফেতে পাবেন স্পেশাল ডিসকাউন্ট, বাই ১ গেট ১ (BOGO) এবং দারুণ সব প্রিভিলেজ।",
+        "সেরা সব ফ্যাশন, গ্রুমিং, ফিটনেস এবং লাইফস্টাইল ব্র্যান্ডে থাকছে এক্সক্লুসিভ সব অফার।",
+        "জনপ্রিয় সব স্ট্রিমিং প্ল্যাটফর্ম এবং ডিজিটাল এন্টারটেইনমেন্ট সার্ভিসে উপভোগ করুন আকর্ষণীয় সাবস্ক্রিপশন অফার।",
+        "আমাদের পার্টনার হোটেল ও রিসোর্টগুলোতে থাকছে চমৎকার রেট, সিজনাল অফার এবং আরো অনেক বাড়তি সুবিধা।",
+        "ডায়াগনস্টিক সার্ভিস, হসপিটাল, জিম, ফার্মেসি এবং ওয়েলনেস সেন্টারগুলোতে পাবেন বিশেষ সেভিংসের সুযোগ।",
+        "পার্টনার রিটেইলারদের কাছ থেকে কনজ্যুমার ইলেকট্রনিক্স, গ্যাজেট এবং হোম অ্যাপ্লায়েন্স কিনলেই পাচ্ছেন দারুণ ডিসকাউন্ট।",
+        "বিমান টিকেট, ট্রাভেল এজেন্সি এবং আকর্ষণীয় সব ট্যুর প্যাকেজে থাকছে স্পেশাল ছাড়।",
       ],
     };
   },

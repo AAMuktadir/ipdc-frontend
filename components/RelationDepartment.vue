@@ -3,17 +3,11 @@
     <div class="container">
       <div v-if="$i18n.locale == 'en'" class="relation-department-title">
         <h1 class="department-heading">Investors Relation Department</h1>
-        <p class="department-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum augue
-          arcu, porttitor id sollicitudin suscipit.
-        </p>
+        <p class="department-description"></p>
       </div>
       <div v-if="$i18n.locale == 'bn'" class="relation-department-title">
         <h1 class="department-heading">ইনভেস্টরস রিলেশন ডিপার্টমেন্ট</h1>
-        <p class="department-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum augue
-          arcu, porttitor id sollicitudin suscipit.
-        </p>
+        <p class="department-description"></p>
       </div>
       <div class="department-contact">
         <b-row>

@@ -2,16 +2,13 @@
   <section class="corporate-financial-documents">
     <div class="container">
       <div class="corporate-list-heading" v-if="documentRequiredHeading">
-        <h1 class="corporate-list-heading-title">
+        <h2 class="corporate-list-heading-title">
           {{
             $i18n.locale == "en"
               ? documentRequiredHeading.title
               : documentRequiredHeading.title_bangla
           }}
-        </h1>
-        <!-- <p class="corporate-list-heading-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum augue arcu, porttitor id sollicitudin suscipit.
-        </p> -->
+        </h2>
       </div>
       <div style="overflow: auto">
         <table class="table required-documents-table">

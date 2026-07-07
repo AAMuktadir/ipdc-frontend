@@ -8,11 +8,11 @@
       data-aos-duration="600"
     >
       <div class="faq-heading" v-if="faqHeading">
-        <h1>
+        <h2>
           {{
             $i18n.locale == "en" ? faqHeading.title : faqHeading.title_bangla
           }}
-        </h1>
+        </h2>
         <p>
           {{
             $i18n.locale == "en"
@@ -89,7 +89,7 @@ export default {
   .faq-heading {
     text-align: center;
     padding: 58px 84px 58px 84px;
-    h1 {
+    h2 {
       font-weight: bold;
       font-size: 36px;
       line-height: 133%;
@@ -115,7 +115,7 @@ export default {
   .faq-card {
     .faq-heading {
       padding: 50px 0;
-      h1 {
+      h2 {
         font-size: 25px;
         padding-bottom: 30px;
         .font-bn & {

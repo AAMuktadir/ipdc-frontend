@@ -9,19 +9,13 @@
         <h1 class="conduct-heading">
           Code of Conduct for Chairman, Board Members & Cheif Executive Officer
         </h1>
-        <p class="conduct-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus
-          mattis vel feugiat erat tortor eleifend.
-        </p>
+        <p class="conduct-description"></p>
       </div>
       <div v-if="$i18n.locale == 'bn'" class="code-of-conduct-title">
         <h1 class="conduct-heading">
           চেয়ারম্যান, বোর্ড সদস্য এবং প্রধান নির্বাহী কর্মকর্তার আচরণবিধি
         </h1>
-        <p class="conduct-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus
-          mattis vel feugiat erat tortor eleifend.
-        </p>
+        <p class="conduct-description"></p>
       </div>
       <div>
         <b-card v-if="codeOfConduct.length > 0" no-body>

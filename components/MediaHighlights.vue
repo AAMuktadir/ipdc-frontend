@@ -2,7 +2,7 @@
   <section class="media">
     <div class="container">
       <div class="media-title">
-        <h1 class="media-title-heading">Lorem Ipsum Dolor Sit Amet</h1>
+        <h1 class="media-title-heading"></h1>
         <p class="media-title-description">
           Your confidence is our credibility...
         </p>

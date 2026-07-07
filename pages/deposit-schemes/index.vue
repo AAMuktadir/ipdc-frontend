@@ -1,9 +1,6 @@
 <template>
   <div>
     <CoverImageWithButton :page="page" />
-    <!-- <RetailDeposit
-      :ratesForRetailDepositProduct="ratesForRetailDepositProduct"
-    /> -->
     <br />
     <ButtonOnly :buttonText="button1" />
     <WhatWeOffer
@@ -14,8 +11,6 @@
       :loanTermAmount="depositSchemeTermAmount"
       :termAmountHeading="termAmountHeading"
     />
-    <!--    <DepositSchemesOffer :depositSchemeOfferCard="depositSchemeOfferCard" :offerHeading="offerHeading"/>-->
-
     <BestFitsNeeds
       :depositSchemePackage="depositSchemePackage"
       :bestFitHeading="bestFitHeading"
@@ -23,10 +18,6 @@
     <YoutubePlaylist
       :youtubePlaylists="youtubePlaylists"
       :youtubePlaylistHeading="youtube_playlist_heading"
-    />
-    <DepositOngoingCampaigns
-      :page="page"
-      :depositSchemeLearnMoreHeading="depositSchemeLearnMoreHeading"
     />
 
     <DepositTerms />
@@ -51,9 +42,6 @@
       :selfEmployed="depositSchemeForInstitutionalAccount"
       :title="depositSchemeForInstitutionalAccountHeading"
     />
-    <div v-if="calculatorSettings.status === 'Active'">
-      <DriveyourDream />
-    </div>
 
     <Eligibility
       :loanEligibilities="depositSchemeEligibility"
@@ -68,12 +56,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "deposit_scheme");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -120,7 +122,8 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Start Growing Your Savings with a Trusted, AAA-Rated Financial Institution Today",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",
@@ -158,7 +161,7 @@ export default {
       this.depositSchemeFooterApplicationForm =
         resData.depositSchemeFooterApplicationForm;
       this.downloadableFile = resData.downloadableFile;
-      this.ratesForRetailDepositProduct = resData.ratesForRetailDepositProduct;
+      this.button1.url = resData.ratesForRetailDepositProduct.file_url;
       this.depositSchemeLearnMoreHeading =
         resData.depositSchemeLearnMoreHeading[0];
 

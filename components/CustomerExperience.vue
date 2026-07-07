@@ -1,18 +1,21 @@
+<!-- pages: index, SSR: OK, Error: None -->
 <template>
   <section class="customer-experience">
     <div class="container" v-if="home_customer_experience_heading">
       <div class="customer-experience_headline">
-        <h1 v-if="$i18n.locale == 'en'" class="experience-title">
-          {{ home_customer_experience_heading.title }}
-        </h1>
-        <h1 v-if="$i18n.locale == 'bn'" class="experience-title">
-          {{ home_customer_experience_heading.title_bangla }}
-        </h1>
-        <p v-if="$i18n.locale == 'en'" class="experience-description">
-          {{ home_customer_experience_heading.sub_title }}
-        </p>
-        <p v-if="$i18n.locale == 'bn'" class="experience-description">
-          {{ home_customer_experience_heading.sub_title_bangla }}
+        <h2 class="experience-title">
+          {{
+            $i18n.locale == "en"
+              ? home_customer_experience_heading.title
+              : home_customer_experience_heading.title_bangla
+          }}
+        </h2>
+        <p class="experience-description">
+          {{
+            $i18n.locale == "en"
+              ? home_customer_experience_heading.sub_title
+              : home_customer_experience_heading.sub_title_bangla
+          }}
         </p>
       </div>
       <div class="create-experience" v-if="homeCustomerExperience.length > 0">
@@ -22,13 +25,15 @@
           :key="item.id"
         >
           <img :src="item.image" alt="Img" />
-          <div v-if="$i18n.locale == 'en'" class="creating-customer-title">
-            <h4>{{ item.title }}</h4>
-            <p>{{ item.description }}</p>
-          </div>
-          <div v-if="$i18n.locale == 'bn'" class="creating-customer-title">
-            <h4>{{ item.title_bangla }}</h4>
-            <p>{{ item.description_bangla }}</p>
+          <div class="creating-customer-title">
+            <h3>{{ $i18n.locale == "en" ? item.title : item.title_bangla }}</h3>
+            <p>
+              {{
+                $i18n.locale == "en"
+                  ? item.description
+                  : item.description_bangla
+              }}
+            </p>
           </div>
         </div>
       </div>
@@ -105,7 +110,7 @@ export default {
         margin-bottom: 15px;
       }
       .creating-customer-title {
-        h4 {
+        h3 {
           font-weight: bold;
           font-size: 22px;
           line-height: 140.91%;
@@ -164,7 +169,7 @@ export default {
           margin-right: 10px;
         }
         .creating-customer-title {
-          h4 {
+          h3 {
             font-size: 18px;
             .font-bn & {
               font-size: 25px;
@@ -210,7 +215,7 @@ export default {
           margin-right: 10px;
         }
         .creating-customer-title {
-          h4 {
+          h3 {
             font-size: 18px;
             .font-bn & {
               font-size: 25px;

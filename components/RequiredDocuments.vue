@@ -2,20 +2,22 @@
   <section class="container">
     <div class="required-documents">
       <div class="required-heading" v-if="documentsRequiredHeading">
-        <h1 class="required-title">
+        <h2 class="required-title">
           {{
             $i18n.locale == "en"
               ? documentsRequiredHeading.title
               : documentsRequiredHeading.title_bangla
           }}
-        </h1>
+        </h2>
         <p class="required-description">
-          <!-- Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-          Dictum augue arcu, porttitor id sollicitudin suscipit. -->
+          {{
+            $i18n.locale == "en"
+              ? documentsRequiredHeading.sub_title
+              : documentsRequiredHeading.sub_title_bangla
+          }}
         </p>
       </div>
       <div v-if="loanRequiredDocuments.length > 0" class="documents-details">
-
         <div
           v-for="homeLoanSingleRequiredDocument in loanRequiredDocuments"
           :key="homeLoanSingleRequiredDocument.id"

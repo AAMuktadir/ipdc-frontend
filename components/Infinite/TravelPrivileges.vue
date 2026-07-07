@@ -15,94 +15,34 @@
 
       <!-- CONTENT -->
       <div class="content" ref="travelContent">
-        <h2>Airport Lounge, Meet & Greet & Travel Privileges</h2>
-        <h3>Travel with Comfort, Priority, and Elegance</h3>
+        <h2>
+          {{ isEn ? data.title : data.title_bangla }}
+        </h2>
+        <h3>
+          {{ isEn ? data.sub_title : data.sub_title_bangla }}
+        </h3>
 
         <p>
-          Enjoy a seamless and elevated travel experience with a suite of
-          premium privileges designed for frequent travelers.
+          {{ isEn ? data.description : data.description_bangla }}
         </p>
 
         <!-- CARDS -->
         <div class="cards">
-          <!-- CARD 1 -->
-          <div class="card travelCard">
+          <!-- CARD -->
+
+          <div class="card travelCard" v-for="privilege in data.privileges">
             <div class="icon">
-              <img src="~/assets/image/infinite/icons/lounge.png" />
+              <img :src="privilege.icon" />
             </div>
 
-            <h4>Airport Lounge Access</h4>
+            <h4>{{ isEn ? privilege.title : privilege.title_bangla }}</h4>
             <p class="card-sub">
-              Relax and unwind before your journey with access to premium
-              airport lounges.
+              {{ isEn ? privilege.sub_title : privilege.sub_title_bangla }}
             </p>
 
             <ul>
-              <li>
-                Complimentary access to Balaka Lounge at Hazrat Shahjalal
-                International Airport
-              </li>
-              <li>
-                IPDC Elite customers are entitled to two complimentary lounge
-                visits per year with one companion
-              </li>
-              <li>
-                IPDC Infinite customers are entitled to three complimentary
-                lounge visits per year with one companion
-              </li>
-            </ul>
-          </div>
-
-          <!-- CARD 2 -->
-          <div class="card travelCard">
-            <div class="icon">
-              <img src="~/assets/image/infinite/icons/meet.png" />
-            </div>
-
-            <h4>Meet & Greet & Pick & Drop Services</h4>
-            <p class="card-sub">
-              Experience effortless airport journeys with personalized
-              assistance.
-            </p>
-
-            <ul>
-              <li>Dedicated meet and greet service at departure or arrival</li>
-              <li>Assistance with airport formalities and navigation</li>
-              <li>
-                Complimentary pick and drop service for enhanced convenience (as
-                per eligibility criteria)
-              </li>
-              <li>Priority handling for a seamless experience</li>
-              <li>
-                IPDC Elite customers are entitled to two Complimentary Meet and
-                Greet & Pick and Drop Service per year with one companion.
-              </li>
-              <li>
-                IPDC Infinite customers are entitled to three Complimentary Meet
-                and Greet & Pick and Drop Service per year with one companion.
-              </li>
-            </ul>
-          </div>
-
-          <!-- CARD 3 -->
-          <div class="card travelCard">
-            <div class="icon">
-              <img src="~/assets/image/infinite/icons/travel.png" />
-            </div>
-
-            <h4>Travel & Leisure Enhancements</h4>
-            <p class="card-sub">
-              Enhance every journey with thoughtfully curated travel benefits.
-            </p>
-
-            <ul>
-              <li>Complimentary luggage insurance for international travel</li>
-              <li>
-                Priority hotel booking discounts with selected 4 & 5-star hotels
-              </li>
-              <li>Access to exclusive travel deals and partner offers</li>
-              <li>
-                Seamless travel planning support through partner platforms
+              <li v-for="listItem in privilege.list">
+                {{ isEn ? listItem.item : listItem.item_bangla }}
               </li>
             </ul>
           </div>
@@ -118,6 +58,17 @@ export default {
     return {
       observer: null,
     };
+  },
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
+  computed: {
+    isEn() {
+      return this.$i18n.locale === "en";
+    },
   },
 
   mounted() {

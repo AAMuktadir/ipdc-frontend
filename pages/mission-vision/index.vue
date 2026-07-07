@@ -26,12 +26,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "mission_vision_and_values");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -84,7 +98,7 @@ export default {
             resHeading.mission_vission_our_journey_heading[0];
         }
         const response2 = await this.$axios.get(
-          `https://ipdc.com/demo/api/get-extra-mile-data.php`
+          `/get-extra-mile-data`
         );
         this.balanceSheet = response2.data.data.dataItems;
         this.balanceSheetTitle = response2.data.data.dataTitle;

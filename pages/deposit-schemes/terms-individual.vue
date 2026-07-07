@@ -27,9 +27,7 @@ export default {
   methods: {
     async termsConditionContent() {
       try {
-        const response = await this.$axios.get(
-          `https://ipdc.com/demo/api/get-deposit-terms-individual-data.php`
-        );
+        const response = await this.$axios.get('get-deposit-terms-individual-data');
         this.textContent = response.data.data.dataItem;
       } catch (error) {
         console.log("Error fetching termsConditionContent:", error);

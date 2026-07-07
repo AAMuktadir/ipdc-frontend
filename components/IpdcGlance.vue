@@ -1,7 +1,7 @@
 <template>
   <div v-if="homeAtaGlance" class="ipdc-glance">
     <div v-if="$i18n.locale == 'en'" class="glance-text">
-      <h1>{{ homeAtaGlance.title }}</h1>
+      <h2>{{ homeAtaGlance.title }}</h2>
       <p>{{ homeAtaGlance.description }}</p>
       <div class="glance-button">
         <a href="mission-vision" target="_blank">
@@ -13,7 +13,7 @@
       </div>
     </div>
     <div v-if="$i18n.locale == 'bn'" class="glance-text">
-      <h1>{{ homeAtaGlance.title_bangla }}</h1>
+      <h2>{{ homeAtaGlance.title_bangla }}</h2>
       <p>{{ homeAtaGlance.description_bangla }}</p>
       <div class="glance-button">
         <a href="mission-vision" target="_blank">
@@ -62,7 +62,7 @@ export default {
     backdrop-filter: blur(11px);
     border-radius: 18px;
     padding: 30px 27px 40px 44px;
-    h1 {
+    h2 {
       font-weight: bold;
       font-size: 36px;
       line-height: 133%;
@@ -162,7 +162,7 @@ export default {
       right: 0;
       width: 100%;
       border-radius: 0;
-      h1 {
+      h2 {
         font-size: 30px;
         .font-bn & {
           font-size: 40px;
@@ -187,7 +187,7 @@ export default {
       right: 0;
       width: 100%;
       border-radius: 0;
-      h1 {
+      h2 {
         font-size: 30px;
         .font-bn & {
           font-size: 40px;

@@ -27,11 +27,7 @@
               }}
             </h1>
             <p>
-              {{
-                $i18n.locale == "en"
-                  ? "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend."
-                  : "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend."
-              }}
+              {{ $i18n.locale == "en" ? "" : "" }}
             </p>
           </div>
         </b-col>

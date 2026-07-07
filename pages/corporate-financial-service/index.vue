@@ -16,26 +16,35 @@
       :conditionsHeading="conditionsHeading"
     />
     <OngoingCampaigns :page="page" />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
     />
     <Faqs :page="page" />
-    <!-- <DownloadApplicationform
-      :page="page"
-      :footerApplicationForm="footerApplicationForm"
-    /> -->
   </div>
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "corporate_financial_service_page");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -62,7 +71,8 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Take the next step in your business journey with corporate financing from IPDC",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",

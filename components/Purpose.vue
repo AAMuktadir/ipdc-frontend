@@ -10,7 +10,6 @@
           }}
         </h1>
         <!-- <p class="purpose-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Dictum augue arcu, porttitor<br> id sollicitudin suscipit.
         </p> -->
       </div>
       <ul

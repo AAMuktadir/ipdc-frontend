@@ -2,7 +2,13 @@
   <section id="faq-section" class="faq-section">
     <div class="container">
       <div class="header-wrap">
-        <h2 class="title-gradient">Frequently Asked Questions</h2>
+        <h2 class="title-gradient">
+          {{
+            $i18n.locale == "en"
+              ? "Frequently Asked Questions"
+              : "বহুল জিজ্ঞাসিত প্রশ্নসমূহ"
+          }}
+        </h2>
       </div>
 
       <div class="content-wrapper">
@@ -16,8 +22,11 @@
             ref="faqItems"
           >
             <div class="faq-header">
-              <span class="sl-box">{{ (index + 1) | formatIndex }}</span>
-              <h3 class="question">{{ faq.question }}</h3>
+              <span class="sl-box">{{ formatSerial(index) }}</span>
+              <h3 class="question" v-if="$i18n.locale == 'en'">
+                {{ faq.question }}
+              </h3>
+              <h3 class="question" v-else>{{ faq.question_bangla }}</h3>
             </div>
 
             <transition
@@ -28,9 +37,16 @@
               @after-leave="endTransition"
             >
               <div v-show="activeIndex === index" class="faq-answer-container">
-                <div class="faq-answer-content" v-html="faq.answer">
-                  <!-- <p>{{ faq.answer }}</p> -->
-                </div>
+                <div
+                  class="faq-answer-content"
+                  v-if="$i18n.locale == 'en'"
+                  v-html="faq.answer"
+                ></div>
+                <div
+                  class="faq-answer-content"
+                  v-else
+                  v-html="faq.answer_bangla"
+                ></div>
               </div>
             </transition>
           </div>
@@ -42,19 +58,9 @@
 
 <script>
 export default {
-  props: {
-    faqs: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  filters: {
-    formatIndex(val) {
-      return val < 10 ? `0${val}` : val;
-    },
-  },
   data() {
     return {
+      faqs: [],
       page: "ipdc-infinite",
       activeIndex: 0,
       currentCardIndex: 0,
@@ -63,64 +69,32 @@ export default {
       touchEndX: 0,
       minSwipeDistance: 50, // Minimum pixels to trigger swipe
       observer: null,
-      // faqs: [
-      //   {
-      //     question: "What is the IPDC Infinite?",
-      //     answer:
-      //       "The IPDC Infinite is a premium customer proposition designed to offer enhanced financial services, priority support, and exclusive lifestyle benefits to our valued clients. It goes beyond traditional financial services to provide a more personalized and rewarding experience.",
-      //   },
-      //   {
-      //     question: "What are the different tiers in the IPDC Infinite?",
-      //     answer:
-      //       "The Infinite Segment has two tiers: • IPDC Elite – for customers maintaining BDT 50 lac to less than BDT 2 crore • IPDC Infinite – for customers maintaining BDT 2 crore and above Each tier offers a distinct set of benefits based on your relationship with IPDC.",
-      //   },
-      //   {
-      //     question: "How do I qualify for IPDC Elite or Infinite?",
-      //     answer:
-      //       "You are automatically eligible based on your total relationship balance with IPDC. Once you meet the required threshold, you will be onboarded into the respective segment.",
-      //   },
-      //   {
-      //     question: "Will I be notified if I become eligible?",
-      //     answer:
-      //       "Yes. Once you qualify, you will receive an official communication from IPDC along with your welcome details and benefit information.",
-      //   },
-      //   {
-      //     question: "What kind of benefits do I receive?",
-      //     answer:
-      //       "Depending on your segment, you can enjoy:• Dedicated Relationship Manager • Priority service and faster response • Doorstep banking services • Airport lounge access • Lifestyle, dining, and shopping offers • Travel and wellness benefits • Exclusive IPDC Privilege Cards Higher-tier customers (Infinite) receive additional and more personalized benefits.",
-      //   },
-      //   {
-      //     question:
-      //       "Are the benefits the same for Elite and Infinite customers?",
-      //     answer:
-      //       "No. While both segments enjoy premium services, Infinite customers receive higher limits, additional benefits, and more personalized services compared to Elite customers.",
-      //   },
-      //   {
-      //     question: "How long are the benefits valid?",
-      //     answer:
-      //       "Your benefits remain valid as long as you maintain the required balance for your respective segment.",
-      //   },
-      //   {
-      //     question: "Can my segment status change over time?",
-      //     answer:
-      //       "Yes. Your segment may be upgraded or downgraded based on changes in your relationship balance with IPDC.",
-      //   },
-      //   {
-      //     question: "Who do I contact for assistance?",
-      //     answer:
-      //       "You can contact: • Your Dedicated Relationship Manager, or • The IPDC Priority Call Center Line. We are always here to assist you.",
-      //   },
-      // ],
     };
   },
-  mounted() {
-    // this.startAutoplay();
+  async mounted() {
+    await this.getFaqByPage();
     this.initFaqObserver();
   },
   beforeDestroy() {
     clearInterval(this.autoplayInterval);
   },
   methods: {
+    async getFaqByPage() {
+      try {
+        const response = await this.$axios.get(`/get-faqs/ipdc-infinite`);
+        this.faqs = response.data.data;
+        this.faqHeading = response.data.faqHeading[0];
+      } catch (error) {
+        console.log("Error fetching getFaqByPage:", error);
+      }
+    },
+    formatSerial(index) {
+      const serial = index < 9 ? `0${index + 1}` : `${index + 1}`;
+      if (this.$i18n.locale !== "bn") return serial;
+
+      const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+      return serial.replace(/\d/g, (digit) => bnDigits[digit]);
+    },
     initFaqObserver() {
       const options = {
         root: null,

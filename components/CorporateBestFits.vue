@@ -3,13 +3,13 @@
     <div v-if="corporateScheme.length > 0" class="container">
       <div class="corporate-best-fits">
         <div class="corporate-best-fits-heading" v-if="schemeHeading">
-          <h1 class="corporate-best-fits-heading-title">
+          <h2 class="corporate-best-fits-heading-title">
             {{
               $i18n.locale == "en"
                 ? schemeHeading.title
                 : schemeHeading.title_bangla
             }}
-          </h1>
+          </h2>
           <p class="corporate-best-fits-heading-description">
             {{
               $i18n.locale == "en"
@@ -49,11 +49,11 @@
                   data-aos-duration="600"
                   v-if="scheme.is_description_active"
                 >
-                  <h1 class="financial-lease-heading-title">
+                  <h2 class="financial-lease-heading-title">
                     {{
                       $i18n.locale == "en" ? scheme.name : scheme.name_bangla
                     }}
-                  </h1>
+                  </h2>
                   <p class="financial-lease-heading-description">
                     {{
                       $i18n.locale == "en"

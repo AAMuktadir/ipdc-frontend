@@ -5,8 +5,6 @@
         <div class="terms-amount-title" v-if="termAmountHeading">
           <h1>{{ termAmountHeading.title }}</h1>
           <!-- <p>
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-            Dictum augue arcu, porttitor id sollicitudin suscipit.
           </p> -->
         </div>
         <div

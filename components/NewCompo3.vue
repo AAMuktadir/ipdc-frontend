@@ -1,6 +1,11 @@
 <template>
   <section class="sus-fin-product">
     <div class="green-fin-products">
+      <div class="have-offers-detail">
+        <h2 class="have-offers-title">
+          Personal Loan Solutions for Professionals
+        </h2>
+      </div>
       <b-row id="last-row">
         <b-col
           v-for="(card, index) in cards_other"
@@ -89,6 +94,28 @@ export default {
     padding: 15px;
     width: 70%;
     margin: 0 auto;
+
+    .have-offers-detail {
+      text-align: center;
+      margin-bottom: 80px;
+      .have-offers-title {
+        font-weight: bold;
+        font-size: 36px;
+        color: #343434;
+        .font-bn & {
+          font-size: 41px;
+        }
+      }
+      .have-offers-description {
+        font-size: 16px;
+        line-height: 154.3%;
+        color: #858585;
+        padding: 15px 220px;
+        .font-bn & {
+          font-size: 21px;
+        }
+      }
+    }
 
     .row {
       gap: 50px;

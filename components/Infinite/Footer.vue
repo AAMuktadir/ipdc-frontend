@@ -9,59 +9,82 @@
     >
       <div class="header-wrap">
         <div class="elite-footer-title" ref="footerTitle">
-          <h2 class="footer-title">Step Into the Infinite World</h2>
+          <h2 class="footer-title">
+            {{
+              $i18n.locale == "en"
+                ? "Step Into the Infinite World"
+                : "ইনফিনিট দুনিয়ায় আপনাকে স্বাগতম"
+            }}
+          </h2>
           <h3 class="footer-description">
-            Experience a new standard of financing relationship and lifestyle
-            privileges with IPDC Infinite.
+            {{
+              $i18n.locale == "en"
+                ? "Experience a new standard of financing relationship and lifestyle privileges with IPDC Infinite."
+                : "আইপিডিসি ইনফিনিট-এর সাথে আপনার লাইফস্টাইল ও ফাইন্যান্সিয়াল সম্পর্কে যুক্ত হোক নতুন সব স্পেশাল প্রিভিলেজ।"
+            }}
           </h3>
-          <p>Apply now and redefine your financial journey.</p>
+          <p>
+            {{
+              $i18n.locale == "en"
+                ? "Apply now and redefine your financial journey."
+                : "আজই অ্যাপ্লাই করুন এবং আপনার ফাইন্যান্সিয়াল লাইফে নিয়ে আসুন এক নতুন দিগন্ত।"
+            }}
+          </p>
         </div>
       </div>
 
       <div class="elite-footer__flex">
         <!-- LEFT -->
         <div class="elite-footer__left" ref="leftSide">
-          <h2 class="elite-footer__heading">Stay Connected</h2>
+          <h2 class="elite-footer__heading">
+            {{ $i18n.locale == "en" ? "Stay Connected" : "যোগাযোগ" }}
+          </h2>
 
           <div class="elite-footer__info">
-            <p class="label">Priority Hotline:</p>
-            <p>16519 | +880 9612 816519</p>
+            <p class="label">
+              {{
+                $i18n.locale == "en"
+                  ? "Priority Hotline:"
+                  : "প্রায়োরিটি হটলাইন:"
+              }}
+            </p>
+            <p>
+              {{
+                $i18n.locale == "en"
+                  ? "16519 | +880 9612 816519"
+                  : "১৬৫১৯ | +৮৮০ ৯৬১২ ৮১৬৫১৯"
+              }}
+            </p>
           </div>
 
           <div class="elite-footer__info">
-            <p class="label">Address:</p>
-            <p>Hosna Center (4th Floor), 106 Gulshan Avenue, Dhaka</p>
+            <p class="label">
+              {{ $i18n.locale == "en" ? "Address:" : "ঠিকানা:" }}
+            </p>
+            <p>
+              {{
+                $i18n.locale == "en"
+                  ? "Hosna Center (4th Floor), 106 Gulshan Avenue, Dhaka"
+                  : "হোসনা সেন্টার (৪র্থ তলা), ১০৬ গুলশান এভিনিউ, ঢাকা"
+              }}
+            </p>
           </div>
         </div>
 
         <!-- RIGHT -->
         <div class="elite-footer__right" ref="rightSide">
           <img :src="goldenLogo" alt="" />
-          <!-- <div class="elite-footer__newsletter">
-            <h3>Newsletter</h3>
-            <h4>Join the Circle</h4>
-            <p>Subscribe for exclusive invitations and lifestyle updates.</p>
-
-            <form @submit.prevent="subscribe">
-              <input
-                v-model="email"
-                type="email"
-                placeholder="Enter your email"
-                required
-              />
-
-              <button type="submit">Subscribe</button>
-            </form>
-          </div> -->
         </div>
       </div>
 
       <div class="elite-footer__disclaimer" ref="disclaimer">
-        <h4>Disclaimer</h4>
+        <h4>{{ $i18n.locale == "en" ? "Disclaimer" : "ডিসক্লেইমার" }}</h4>
         <p>
-          Membership to IPDC Elite and Infinite is subject to maintaining the
-          required portfolio balance. Terms and conditions apply to all
-          privileges and partner offers.
+          {{
+            $i18n.locale == "en"
+              ? "Membership to IPDC Elite and Infinite is subject to maintaining the required portfolio balance. Terms and conditions apply to all privileges and partner offers."
+              : "আইপিডিসি এলিট এবং ইনফিনিট-এর মেম্বারশিপ বা সুবিধাগুলো সচল রাখতে নির্দিষ্ট পরিমাণ পোর্টফোলিও ব্যালেন্স বজায় রাখা বাধ্যতামূলক। এছাড়া সকল প্রিভিলেজ এবং পার্টনার অফারের ক্ষেত্রে সংশ্লিষ্ট শর্তাবলী প্রযোজ্য হবে।"
+          }}
         </p>
       </div>
     </div>

@@ -208,6 +208,10 @@ export default {
   margin-bottom: 22px;
 }
 
+.description {
+  font-size: 21px;
+}
+
 /* handle CMS HTML content safely */
 .description :deep(p) {
   margin: 0 0 12px;

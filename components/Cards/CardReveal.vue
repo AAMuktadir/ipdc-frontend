@@ -1,7 +1,9 @@
 <template>
   <section id="card" class="snap-section card-wrap">
     <div class="header-wrap">
-      <h2 class="title-gradient">Our Cards</h2>
+      <h2 class="title-gradient">
+        {{ $i18n.locale == "en" ? "Our Cards" : "আমাদের কার্ডসমূহ" }}
+      </h2>
     </div>
 
     <div class="main-div">
@@ -11,6 +13,8 @@
         @pointermove="onDragMove"
         @pointerup="onDragEnd"
         @pointerleave="onDragEnd"
+        @mouseenter="pauseAutoRotate"
+        @mouseleave="resumeAutoRotate"
       >
         <div class="orbit-stage">
           <div class="glow-element"></div>
@@ -19,10 +23,10 @@
             v-for="(card, i) in cards"
             :key="i"
             class="card-item"
-            :class="[getCardClass(i), { 'portrait-card': card.isPortrait }]"
+            :class="{ 'is-active': activeIndex === i, 'portrait-card': card.isPortrait }"
+            :style="cardStyle(i)"
             @click="handleClick(i)"
           >
-            <!-- TILT wrapper -->
             <div
               class="tilt-container"
               @mousemove="handleTilt($event, i)"
@@ -41,13 +45,29 @@
       </div>
 
       <div class="content" ref="content">
-        <slot name="title"><h2>Key Features</h2></slot>
+        <slot name="title"
+          ><h2>
+            {{ $i18n.locale == "en" ? "Key Features" : "মূল সুবিধাগুলো" }}
+          </h2></slot
+        >
 
         <div class="description-area">
           <slot name="description">
-            <ul class="feature-list">
+            <ul class="feature-list" v-if="$i18n.locale == 'en'">
               <li
                 v-for="(feature, index) in features"
+                :key="index"
+                class="feature-item"
+                :class="{ 'is-visible': visibleFeatures.includes(index) }"
+                ref="featureItems"
+              >
+                <span class="bullet"></span>
+                {{ feature }}
+              </li>
+            </ul>
+            <ul class="feature-list" v-else>
+              <li
+                v-for="(feature, index) in features_bangla"
                 :key="index"
                 class="feature-item"
                 :class="{ 'is-visible': visibleFeatures.includes(index) }"
@@ -66,7 +86,7 @@
 
 <script>
 export default {
-  props: ["features"],
+  props: ["features", "features_bangla"],
   data() {
     return {
       cards: [
@@ -90,109 +110,150 @@ export default {
           section: "infinite-card",
           isPortrait: true,
         },
+        {
+          img: require("~/assets/image/card/progga_card_front.avif"),
+          section: "progga-card",
+          isPortrait: false,
+        },
+        {
+          img: require("~/assets/image/card/protisruti_card_front.avif"),
+          section: "protisruti-card",
+          isPortrait: false,
+        },
       ],
       activeIndex: 0,
       timer: null,
-      dragStartX: 0,
-      isRotating: false,
+      dragStartY: 0,
       isDragging: false,
+      isRotating: false,
       hasMoved: false,
       navbarOffset: 87,
       visibleFeatures: [],
       observer: null,
+      isMobile: false,
+      prefersReducedMotion: false,
     };
   },
 
   mounted() {
+    this.prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    this.updateViewport();
+    window.addEventListener("resize", this.updateViewport);
     this.startAutoRotate();
     this.initFeatureObserver();
   },
 
   beforeDestroy() {
     clearInterval(this.timer);
+    window.removeEventListener("resize", this.updateViewport);
   },
 
   methods: {
-    initFeatureObserver() {
-      const options = {
-        root: null,
-        threshold: 0.2,
-      };
-
-      this.observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            this.revealFeatures();
-            this.observer.disconnect(); // run once
-          }
-        });
-      }, options);
-
-      if (this.$refs.content) {
-        this.observer.observe(this.$refs.content);
-      }
+    updateViewport() {
+      this.isMobile = window.innerWidth <= 768;
     },
 
-    revealFeatures() {
-      this.$nextTick(() => {
-        this.$gsap.fromTo(
-          this.$refs.featureItems,
-          { opacity: 0, y: 40 },
-          {
-            opacity: 1,
-            y: 0,
-            stagger: 0.15,
-            duration: 0.8,
-            ease: "power3.out",
-          }
-        );
-      });
-    },
     /* --------------------------------
-       CARD POSITION LOGIC
+       CARD POSITION (data-driven coverflow)
+       Tunables grouped per branch so you can nudge the look.
     -------------------------------- */
-    getCardClass(i) {
+    cardStyle(i) {
       const total = this.cards.length;
-      const diff = (i - this.activeIndex + total) % total;
+      const fwd = (i - this.activeIndex + total) % total; // 0 = focused
 
-      if (diff === 0) return "active";
-      if (diff === 1) return "next";
-      if (diff === 2) return "bottom";
-      return "prev";
+      /* ---------- MOBILE: centred focus + blurred deck behind ---------- */
+      if (this.isMobile) {
+        if (fwd === 0) {
+          return {
+            left: "50%",
+            top: "60%",
+            transform: "translate(-50%, -50%) translateZ(0) scale(1)",
+            filter: "none",
+            opacity: 1,
+            zIndex: 60,
+          };
+        }
+        const sideCount = total - 1;
+        const t = sideCount > 1 ? (fwd - 1) / (sideCount - 1) : 0;
+        const top = 60 - (10 + 16 * t);
+        const scale = 0.82 - 0.16 * t;
+        const blur = 2 + 3 * t;
+        const brightness = 0.7 - 0.22 * t;
+        return {
+          left: "50%",
+          top: `${top}%`,
+          transform: `translate(-50%, -50%) translateZ(${-60 - 70 * t}px) scale(${scale})`,
+          filter: `blur(${blur}px) brightness(${brightness})`,
+          opacity: 1,
+          zIndex: 40 - fwd,
+        };
+      }
+
+      /* ---------- DESKTOP: focus right-of-centre + blurred left column ---------- */
+      if (fwd === 0) {
+        return {
+          left: "54%",
+          top: "50%",
+          transform: "translate(-50%, -50%) translateZ(70px) scale(1.25)",
+          filter: "none",
+          opacity: 1,
+          zIndex: 60,
+        };
+      }
+      const sideCount = total - 1;
+      const t = sideCount > 1 ? (fwd - 1) / (sideCount - 1) : 0;
+      const top = 14 + (86 - 14) * t;
+      const scale = 0.5 - 0.07 * t;
+      const blur = 3 + 4 * t;
+      const brightness = 0.72 - 0.24 * t;
+      return {
+        left: "18%",
+        top: `${top}%`,
+        transform: `translate(-50%, -50%) translateZ(${-140 - 90 * t}px) scale(${scale})`,
+        filter: `blur(${blur}px) brightness(${brightness})`,
+        opacity: 1,
+        zIndex: 40 - fwd,
+      };
     },
 
     /* --------------------------------
-       AUTO ROTATE (ANTI CLOCKWISE)
+       AUTO ROTATE
     -------------------------------- */
     startAutoRotate() {
+      if (this.prefersReducedMotion) return;
+      clearInterval(this.timer);
       this.timer = setInterval(() => {
         this.moveNext();
       }, 3500);
     },
-
-    resetTimer() {
+    pauseAutoRotate() {
       clearInterval(this.timer);
+      this.timer = null;
+    },
+    resumeAutoRotate() {
       this.startAutoRotate();
     },
-
+    resetTimer() {
+      this.startAutoRotate();
+    },
     moveNext() {
       this.activeIndex = (this.activeIndex + 1) % this.cards.length;
     },
-
     movePrev() {
       this.activeIndex =
         (this.activeIndex - 1 + this.cards.length) % this.cards.length;
     },
 
     /* --------------------------------
-       CLICK BEHAVIOR
+       CLICK
     -------------------------------- */
     handleClick(index) {
       if (this.hasMoved) return;
 
       if (index === this.activeIndex) {
         const section = document.getElementById(this.cards[index].section);
-
         if (section) {
           window.scrollTo({
             top: section.offsetTop - this.navbarOffset,
@@ -201,52 +262,44 @@ export default {
         }
         return;
       }
-
       this.rotateTo(index);
     },
 
     rotateTo(targetIndex) {
       this.resetTimer();
       this.isRotating = true;
-
       const step = () => {
         if (this.activeIndex === targetIndex) {
           this.isRotating = false;
           return;
         }
-
         this.moveNext();
         setTimeout(step, 500);
       };
-
       step();
     },
 
     /* --------------------------------
-       DRAG LEFT / RIGHT
+       DRAG (vertical)
     -------------------------------- */
     onDragStart(e) {
       this.isDragging = true;
       this.hasMoved = false;
       this.dragStartY = e.clientY;
     },
-
     onDragMove(e) {
       if (!this.isDragging) return;
       const delta = e.clientY - this.dragStartY;
       if (Math.abs(delta) > 10) this.hasMoved = true;
     },
-
     onDragEnd(e) {
       if (!this.isDragging) return;
       const delta = e.clientY - this.dragStartY;
-
       if (Math.abs(delta) > 50) {
         this.resetTimer();
         if (delta < 0) this.moveNext();
         else this.movePrev();
       }
-
       this.isDragging = false;
     },
 
@@ -254,7 +307,7 @@ export default {
        TILT + SHINE
     -------------------------------- */
     handleTilt(e, index) {
-      if (index !== this.activeIndex || this.isDragging) return;
+      if (index !== this.activeIndex || this.isDragging || this.isMobile) return;
 
       const tilt = e.currentTarget;
       const shine = tilt.querySelector(".shine");
@@ -281,11 +334,9 @@ export default {
         });
       }
     },
-
-    handleReset(e, index) {
+    handleReset(e) {
       const tilt = e.currentTarget;
       const shine = tilt.querySelector(".shine");
-
       this.$gsap.to(tilt, {
         rotationX: 0,
         rotationY: 0,
@@ -293,54 +344,58 @@ export default {
         duration: 1.6,
         ease: "elastic.out(1, 0.75)",
       });
-
       if (shine) this.$gsap.to(shine, { opacity: 0, duration: 0.5 });
+    },
+
+    /* --------------------------------
+       FEATURE REVEAL
+    -------------------------------- */
+    initFeatureObserver() {
+      const options = { root: null, threshold: 0.2 };
+      this.observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            this.revealFeatures();
+            this.observer.disconnect();
+          }
+        });
+      }, options);
+      if (this.$refs.content) this.observer.observe(this.$refs.content);
+    },
+    revealFeatures() {
+      this.$nextTick(() => {
+        this.$gsap.fromTo(
+          this.$refs.featureItems,
+          { opacity: 0, y: 40 },
+          {
+            opacity: 1,
+            y: 0,
+            stagger: 0.15,
+            duration: 0.8,
+            ease: "power3.out",
+          }
+        );
+      });
     },
   },
 };
 </script>
 
 <style scoped>
-.main-div {
-  min-height: 1000px;
-  display: flex;
-  width: 100%;
-  gap: 20px;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  align-items: stretch; /* important */
-}
-
-/* STAGE (animation container) */
-.main-div .stage {
-  flex: 1;
-  min-width: 0;
-  position: relative;
-  /*overflow: hidden; /* prevents animation overflow breaking layout */
-}
-
-/* CONTENT */
-.main-div .content {
-  flex: 1;
-  min-width: 0;
-}
-
 .card-wrap {
-  height: 100vh;
-  min-height: fit-content;
+  min-height: auto;
   display: flex;
   flex-direction: column;
   align-items: center;
   perspective: 2000px;
   overflow: hidden;
-  gap: 5vh;
-  padding-top: 10vh;
+  gap: 3vh;
+  padding: 12vh 5vw 8vh;
 }
 
 .header-wrap {
   text-align: center;
-  margin-bottom: 120px;
+  margin-bottom: 24px;
   width: 100%;
 }
 
@@ -353,12 +408,47 @@ export default {
   -webkit-text-fill-color: transparent;
 }
 
+.main-div {
+  display: flex;
+  width: 100%;
+  max-width: 1400px;
+  gap: 20px;
+  margin: 0 auto;
+  box-sizing: border-box;
+  align-items: center;
+}
+
+.main-div .stage {
+  flex: 1;
+  min-width: 0;
+}
+
+.main-div .content {
+  flex: 1;
+  min-width: 0;
+}
+
+.stage {
+  position: relative;
+  width: 30vw;
+  height: 440px;
+  cursor: default;
+}
+
+.orbit-stage {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  perspective: 1600px;
+  transform-style: preserve-3d;
+}
+
 .glow-element {
   position: absolute;
-  top: -50%;
-  left: -30%;
-  width: 150%;
-  height: 170%;
+  top: -30%;
+  left: -20%;
+  width: 140%;
+  height: 160%;
   background: radial-gradient(
     circle,
     rgba(237, 1, 127, 0.3) 0%,
@@ -370,26 +460,18 @@ export default {
   z-index: 1;
 }
 
-.stage {
-  position: relative;
-  width: 30vw;
-  height: 400px;
-  cursor: default;
-  top: 20%;
-}
-
-.orbit-stage {
-  position: relative;
-  width: 100%;
-  height: 100%;
-}
-
 .card-item {
   position: absolute;
   left: 50%;
-  transition: filter 0.5s ease, top 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  top: 50%;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, filter;
+  /* Springy overshoot = gentle "gravity" settle as a card lands in focus */
+  transition: top 0.85s cubic-bezier(0.34, 1.5, 0.55, 1),
+    left 0.85s cubic-bezier(0.34, 1.5, 0.55, 1),
+    transform 0.85s cubic-bezier(0.34, 1.5, 0.55, 1), filter 0.6s ease,
+    opacity 0.5s ease;
 }
 
 .tilt-container {
@@ -399,7 +481,7 @@ export default {
 }
 
 .visual-container {
-  width: 20vw;
+  width: clamp(150px, 18vw, 260px);
   aspect-ratio: 500 / 315;
   border-radius: 16px;
   overflow: hidden;
@@ -409,7 +491,7 @@ export default {
 .visual-container.portrait-card {
   width: unset;
   aspect-ratio: 315 / 500;
-  height: 20vw;
+  height: clamp(190px, 24vw, 300px);
 }
 
 .visual-container img {
@@ -430,9 +512,16 @@ export default {
   border-radius: 1.2rem;
 }
 
+.card-item.is-active .visual-container {
+  box-shadow: 0 36px 90px rgba(0, 0, 0, 0.7), 0 0 70px rgba(237, 1, 127, 0.28);
+  -webkit-box-reflect: below 14px
+    linear-gradient(transparent, transparent 60%, rgba(255, 255, 255, 0.14));
+}
+
 .content {
+  padding-top: 50px !important;
   width: 50%;
-  padding: 2rem;
+  padding: 1rem 2rem;
   color: white;
   z-index: 10;
   text-align: left;
@@ -441,7 +530,7 @@ export default {
 .feature-list {
   list-style: none;
   padding: 0;
-  margin: 2rem 0;
+  margin: 1.5rem 0;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -467,123 +556,75 @@ export default {
 .bullet {
   width: 6px;
   height: 6px;
-  background: #0084ff; /* Matches your gradient start */
+  min-width: 6px;
+  background: #0084ff;
   border-radius: 50%;
   box-shadow: 0 0 10px #0084ff;
 }
 
-/* ORBIT POSITIONS */
-.active {
-  top: 10%;
-  transform: translateX(-20%) scale(1.5);
-  z-index: 5;
-  filter: none;
-
-  -webkit-box-reflect: below 10px
-    linear-gradient(transparent, transparent 70%, rgba(255, 255, 255, 0.1));
-}
-.active.portrait-card {
-  top: -15%;
-  transform: translateX(0%) translateY(15%) scale(1.5);
+@media (prefers-reduced-motion: reduce) {
+  .card-item {
+    transition-duration: 0.001ms !important;
+  }
 }
 
-.next {
-  top: 70%;
-  transform: translateX(-125%) scale(0.4);
-  filter: blur(4px) brightness(0.6);
-  z-index: 2;
-}
-.next.portrait-card {
-  top: 45%;
-  transform: translateX(-170%) scale(0.4);
+/* ---------- TABLET ---------- */
+@media (max-width: 991px) {
+  .stage {
+    width: 100%;
+  }
 }
 
-.bottom {
-  top: 10%;
-  transform: translateX(-125%) scale(0.4);
-  filter: blur(6px) brightness(0.4);
-  z-index: 1;
-}
-.bottom.portrait-card {
-  top: -12.5%;
-  transform: translateX(-170%) scale(0.4);
-}
-
-.prev {
-  top: -45%;
-  transform: translateX(-125%) scale(0.4);
-  filter: blur(4px) brightness(0.6);
-  z-index: 2;
-}
-.prev.portrait-card {
-  top: -70%;
-  transform: translateX(-170%) scale(0.4);
-}
-
-/* --- MOBILE FIX --- */
+/* ---------- MOBILE ---------- */
 @media (max-width: 768px) {
   .card-wrap {
-    perspective: 300px;
+    perspective: 1200px;
+    padding: 10vh 5vw 6vh;
+    gap: 2vh;
   }
   .main-div {
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
+    align-items: stretch;
   }
-
   .main-div .stage {
     width: 100%;
-    height: auto;
-    min-height: 250px; /* ensures GSAP has space to animate */
-    top: 0;
+    height: 360px;
   }
-
   .main-div .content {
     width: 100%;
+    padding: 0 0.5rem;
+    text-align: center;
   }
-
+  .feature-list {
+    gap: 0.85rem;
+    margin: 1rem 0;
+  }
+  .feature-item {
+    font-size: 1rem;
+    text-align: left;
+  }
   .visual-container {
-    border-radius: 0px;
+    width: clamp(170px, 60vw, 280px);
+    border-radius: 14px;
   }
-  .glow-element {
-    border-radius: 0px;
+  .visual-container.portrait-card {
+    height: clamp(220px, 62vw, 300px);
   }
   .shine {
-    border-radius: 0px;
+    border-radius: 14px;
   }
+}
 
-  .orbit-stage {
-    height: 60%;
+@media (max-width: 420px) {
+  .main-div .stage {
+    height: 320px;
   }
-
-  .active {
-    transform: translateX(-20%) scale(2.5);
+  .visual-container {
+    width: clamp(160px, 66vw, 240px);
   }
-  .active.portrait-card {
-    transform: translateX(0%) translateY(15%) scale(2.5);
-  }
-
-  .next {
-    transform: translateX(-175%) scale(1);
-  }
-  .next.portrait-card {
-    top: 60%;
-    transform: translateX(-250%) scale(1);
-  }
-
-  .bottom {
-    transform: translateX(-175%) scale(1);
-  }
-  .bottom.portrait-card {
-    transform: translateX(-250%) scale(1);
-  }
-
-  .prev {
-    top: -70%;
-    transform: translateX(-175%) scale(1);
-  }
-  .prev.portrait-card {
-    top: -60%;
-    transform: translateX(-250%) scale(1);
+  .visual-container.portrait-card {
+    height: clamp(200px, 66vw, 270px);
   }
 }
 </style>

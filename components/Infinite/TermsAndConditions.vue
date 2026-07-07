@@ -2,7 +2,9 @@
   <section id="faq-section" class="faq-section">
     <div class="container">
       <div class="header-wrap">
-        <h2 class="title-gradient">Terms & Conditions</h2>
+        <h2 class="title-gradient">
+          {{ $i18n.locale == "en" ? "Terms & Conditions" : "শর্তাবলি" }}
+        </h2>
       </div>
 
       <div class="content-wrapper">
@@ -16,8 +18,11 @@
             ref="faqItems"
           >
             <div class="faq-header">
-              <span class="sl-box">{{ (index + 1) | formatIndex }}</span>
-              <h3 class="question">{{ faq.question }}</h3>
+              <span class="sl-box">{{ formatSerial(index) }}</span>
+              <h3 class="question" v-if="$i18n.locale == 'en'">
+                {{ faq.question }}
+              </h3>
+              <h3 class="question" v-else>{{ faq.question_bangla }}</h3>
             </div>
 
             <transition
@@ -28,9 +33,16 @@
               @after-leave="endTransition"
             >
               <div v-show="activeIndex === index" class="faq-answer-container">
-                <div class="faq-answer-content" v-html="faq.answer">
-                  <!-- <p>{{ faq.answer }}</p> -->
-                </div>
+                <div
+                  class="faq-answer-content"
+                  v-if="$i18n.locale == 'en'"
+                  v-html="faq.answer"
+                ></div>
+                <div
+                  class="faq-answer-content"
+                  v-else
+                  v-html="faq.answer_bangla"
+                ></div>
               </div>
             </transition>
           </div>
@@ -42,11 +54,6 @@
 
 <script>
 export default {
-  filters: {
-    formatIndex(val) {
-      return val < 10 ? `0${val}` : val;
-    },
-  },
   data() {
     return {
       activeIndex: 0,
@@ -61,26 +68,45 @@ export default {
           question: "Introduction",
           answer:
             "The IPDC Infinite is an exclusive program offered by IPDC Finance PLC to selected customers based on their relationship value. By participating in this program, customers agree to the following Terms & Conditions.",
+          question_bangla: "পরিচিতি",
+          answer_bangla:
+            "আইপিডিসি ইনফিনিট হলো আইপিডিসি ফাইন্যান্স পিএলসি’র একটি এক্সক্লুসিভ প্রোগ্রাম, যা নির্দিষ্ট কিছু গ্রাহকদের মোট ব্যালেন্স বা জমার পরিমাণের ওপর ভিত্তি করে অফার করা হয়। এই প্রোগ্রামে অন্তর্ভুক্ত হওয়ার মাধ্যমে গ্রাহক নিচের সমস্ত শর্তাবলিতে সম্মতি প্রকাশ করছেন।",
         },
         {
           question: "Eligibility Criteria",
           answer:
             "Customers are eligible based on their total relationship balance with IPDC.<br>• Elite Segment: BDT 50 lac to less than BDT 2 crore<br>• Infinite Segment: BDT 2 crore and above<br>IPDC reserves the right to determine eligibility at its sole discretion.",
+
+          question_bangla: "যোগ্যতার শর্তাবলী",
+          answer_bangla:
+            "<p>আইপিডিসি&rsquo;র সাথে আপনার মোট ব্যালেন্স বা জমার পরিমাণের ওপর ভিত্তি করেই আপনি এই সুবিধার জন্য যোগ্য বলে বিবেচিত হবেন।</p><ul>	<li>এলিট সেগমেন্ট: ৫০ লাখ টাকা থেকে শুরু করে ২ কোটি টাকার কম ব্যালেন্সের জন্য।</li>	<li>ইনফিনিট সেগমেন্ট: ২ কোটি টাকা বা তার বেশি ব্যালেন্সের জন্য।</li></ul><p>কারা এই সুবিধার আওতায় আসবেন, সেই যোগ্যতার বিষয়টি সম্পূর্ণভাবে আইপিডিসি&rsquo;র নিজস্ব সিদ্ধান্তের ওপর নির্ভর করে।</p>",
         },
         {
           question: "Enrollment & Activation",
           answer:
             "Enrollment into the Privilege Segment is automatic upon meeting eligibility criteria.<br>Customers will be notified through official communication channels.<br>Benefits become active upon successful onboarding and issuance of the Privilege Card.",
+
+          question_bangla: "অন্তর্ভুক্তি ও সক্রিয়করণ",
+          answer_bangla:
+            "<ul><li>যোগ্যতার শর্ত পূরণ হওয়া মাত্রই আপনি স্বয়ংক্রিয়ভাবে আমাদের এই প্রিভিলেজ সেগমেন্টের অন্তর্ভুক্ত হয়ে যাবেন।</li><li>সফলভাবে যুক্ত হওয়ার পর আইপিডিসি&rsquo;র অফিসিয়াল যোগাযোগ মাধ্যমগুলো&rsquo;র (যেমন- এসএমএস বা ইমেইল) সাহায্যে আপনাকে তা জানিয়ে দেওয়া হবে।</li><li>আপনার অনবোর্ডিং প্রক্রিয়া শেষ হওয়া এবং বিশেষ প্রিভিলেজ কার্ড-টি ইস্যু করার পরপরই আপনার সমস্ত সুযোগ-সুবিধা অ্যাক্টিভ হয়ে যাবে।</li></ul>",
         },
         {
           question: "Validity of Membership",
           answer:
             "Membership remains valid as long as the customer maintains the required balance.<br>IPDC may review customer eligibility periodically.<br>Customers may be upgraded or downgraded based on changes in their relationship balance.",
+
+          question_bangla: "মেম্বারশিপের মেয়াদ",
+          answer_bangla:
+            "<ul><li>আপনার নির্ধারিত সেগমেন্টের জন্য প্রয়োজনীয় ব্যালেন্স যতদিন বজায় থাকবে, আপনার এই মেম্বারশিপ বা সুবিধাগুলোও ততদিন সচল থাকবে।</li><li>গ্রাহকদের এই যোগ্যতার বিষয়টি আইপিডিসি নির্দিষ্ট সময় পর পর রিভিউ বা যাচাই করে দেখতে পারে।</li><li>আইপিডিসি&rsquo;র সাথে আপনার মোট ব্যালেন্স বা জমার পরিমাণের পরিবর্তনের ওপর ভিত্তি করে আপনার সেগমেন্ট স্ট্যাটাস যে-কোনো সময় আপগ্রেড কিংবা ডাউনগ্রেড হতে পারে।</li></ul>",
         },
         {
           question: "Privilege Benefits",
           answer:
             "Benefits differ between Elite and Infinite segments.<br>All benefits are subject to availability, partner terms and conditions, and usage limits.<br>IPDC reserves the right to modify, replace, or withdraw any benefit without prior notice.",
+
+          question_bangla: "প্রিভিলেজ সুবিধা",
+          answer_bangla:
+            "<ul><li>এলিট এবং ইনফিনিট&mdash;এই দু&rsquo;টি সেগমেন্টের সুযোগ-সুবিধা ও প্রিভিলেজ সম্পূর্ণ আলাদা।</li><li>সমস্ত সুযোগ-সুবিধাগুলো অ্যাভেলেবল থাকা, সংশ্লিষ্ট পার্টনার ব্র্যান্ডের নিজস্ব শর্তাবলি এবং ব্যবহারের নির্দিষ্ট সীমার ওপর নির্ভর করবে।</li><li>কোনো পূর্ব ঘোষণা ছাড়াই যে-কোনো সুযোগ-সুবিধা পরিবর্তন, প্রতিস্থাপন অথবা পুরোপুরি প্রত্যাহার করার সম্পূর্ণ অধিকার আইপিডিসি সংরক্ষণ করে।</li></ul>",
         },
       ],
     };
@@ -93,6 +119,13 @@ export default {
     clearInterval(this.autoplayInterval);
   },
   methods: {
+    formatSerial(index) {
+      const serial = index < 9 ? `0${index + 1}` : `${index + 1}`;
+      if (this.$i18n.locale !== "bn") return serial;
+
+      const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+      return serial.replace(/\d/g, (digit) => bnDigits[digit]);
+    },
     initFaqObserver() {
       const options = {
         root: null,

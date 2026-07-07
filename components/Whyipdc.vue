@@ -2,10 +2,13 @@
   <div class="why-ipdc">
     <b-container>
       <div class="why-ipdc-title">
-        <h1 v-if="$i18n.locale == 'en'">{{ home_why_choose_heading.title }}</h1>
-        <h1 v-if="$i18n.locale == 'bn'">
-          {{ home_why_choose_heading.title_bangla }}
-        </h1>
+        <h2>
+          {{
+            $i18n.locale == "en"
+              ? home_why_choose_heading.title
+              : home_why_choose_heading.title_bangla
+          }}
+        </h2>
         <div
           v-html="
             $i18n.locale == 'en'
@@ -25,13 +28,16 @@
         <div class="choose-image">
           <img :src="item.image" alt="icon" />
         </div>
-        <div v-if="$i18n.locale == 'en'" class="choose-heading">
-          <h5 class="choose-title">{{ item.title }}</h5>
-          <p class="choose-description">{{ item.description }}</p>
-        </div>
-        <div v-if="$i18n.locale == 'bn'" class="choose-heading">
-          <h5 class="choose-title">{{ item.title_bangla }}</h5>
-          <p class="choose-description">{{ item.description_bangla }}</p>
+        <div class="choose-heading">
+          <h3 class="choose-title">
+            {{ $i18n.locale == "en" ? item.title : item.title_bangla }}
+          </h3>
+          <div
+            class="choose-description"
+            v-html="
+              $i18n.locale == 'en' ? item.description : item.description_bangla
+            "
+          ></div>
         </div>
       </div>
     </div>
@@ -45,12 +51,12 @@ export default {
     whyChooseCards: {
       type: Array,
       required: true,
-      default: [],
+      default: () => [],
     },
     home_why_choose_heading: {
       type: Object,
       required: true,
-      default: {},
+      default: () => ({}),
     },
   },
 };
@@ -61,7 +67,7 @@ export default {
     text-align: center;
     margin-bottom: 75px;
 
-    h1 {
+    h2 {
       font-weight: bold;
       font-size: 36px;
       line-height: 133%;
@@ -82,42 +88,71 @@ export default {
   }
   .why-choose {
     display: flex;
-    align-items: center;
+    align-items: stretch;
     justify-content: center;
-    margin-bottom: 80px;
     gap: 16px;
+    margin-bottom: 80px;
+    flex-wrap: wrap;
+
     .choose {
-      width: 259px;
-      height: 272px;
+      width: 240px;
       background: #ffffff;
       border: 1px solid #e7e7e7;
       box-shadow: 4px 4px 58px rgba(0, 0, 0, 0.07);
       border-radius: 12px;
+
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding-top: 30px;
+
+      padding: 30px 16px;
+      height: auto;
+
       .choose-image {
         width: 62px;
         height: 62px;
-        margin-bottom: 10px;
+        margin-bottom: 16px;
+        flex-shrink: 0;
+
+        img {
+          width: 100%;
+          height: 100%;
+          object-fit: contain;
+        }
       }
+
       .choose-heading {
         text-align: center;
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        width: 100%;
+
         .choose-title {
           font-weight: bold;
           font-size: 22px;
           line-height: 141%;
           color: #343434;
+          margin-bottom: 10px;
+
+          min-height: 100px;
+
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
           .font-bn & {
             font-size: 27px;
+            min-height: 76px;
           }
         }
+
         .choose-description {
           font-size: 16px;
           line-height: 154.3%;
-          padding: 0 13px;
           color: #858585;
+          flex: 1;
+
           .font-bn & {
             font-size: 21px;
           }
@@ -127,12 +162,11 @@ export default {
       &:hover {
         .choose-image {
           transition: 0.5s all ease-in-out;
-          transform: scale(1.5);
+          transform: scale(1.15);
         }
-        .choose-heading {
-          .choose-description {
-            color: #343434;
-          }
+
+        .choose-description {
+          color: #343434;
         }
       }
     }
@@ -142,7 +176,7 @@ export default {
   .why-ipdc {
     padding-top: 54px;
     .why-ipdc-title {
-      h1 {
+      h2 {
         font-size: 25px;
         .font-bn & {
           font-size: 35px;
@@ -160,18 +194,13 @@ export default {
         flex-direction: row;
         align-items: center;
         width: 95%;
-        height: unset;
-        padding: 20px 0 20px 20px;
+        padding: 30px 20px;
         .choose-image {
           margin-top: 20px;
         }
         .choose-heading {
           text-align: left;
           padding: 0 20px;
-          // .choose-title {
-          // }
-          // .choose-description {
-          // }
         }
       }
     }

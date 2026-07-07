@@ -5,7 +5,6 @@
       :loanWhatWeOfferCards="loanWhatWeOfferCards"
       :offerHeading="offerHeading"
     />
-    <!--    <OffersWeHave />-->
 
     <!-- Extra things added later -->
     <Eligibility
@@ -26,19 +25,14 @@
       :eligibleHeading="eligibleHeading"
       :loanEligibilities="loanEligibilities"
     />
-
-    <!--    <Employed :employed="loanForEmployed" />-->
-    <!--    <SelfEmployed :selfEmployed="loanForSelfEmployed" />-->
     <TermAmount
       :loanTermAmount="loanTermAmount"
       :termAmountHeading="termAmountHeading"
     />
-    <HomeLoanDrivedream />
     <RequiredDocuments
       :loanRequiredDocuments="loanRequiredDocuments"
       :documentsRequiredHeading="documentsRequiredHeading"
     />
-    <!-- <LoansVideo :page="page" /> -->
     <Conditions
       :loanConditions="loanConditions"
       :conditionsHeading="conditionsHeading"
@@ -49,20 +43,30 @@
     />
     <Faqs :page="page" />
     <OngoingCampaigns :page="page" />
-    <!-- <DownloadApplicationform
-      :footerApplicationForm="loanFooterApplicationForm"
-      :page="page"
-    /> -->
   </div>
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "bhalobasa_loan");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -94,18 +98,23 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Get Your Personal Loan Easily With Fast Approval And Simple Process",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",
       },
 
       extra_heading_1: {
-        title: "Bhalo Basha Home Loan – Key Features",
+        title: "Why Choose IPDC Bhalo Basha Loan",
         title_bangla: "ভালো বাসা গৃহঋণ সুবিধাসমূহ এক নজরে",
+        subtitle:
+          "Purposefully designed for homebuyers outside the city - with nationwide reach, flexible financing, and a simple process that removes the barriers to home ownership.",
+        subtitle_bangla:
+          "Purposefully designed for homebuyers outside the city - with nationwide reach, flexible financing, and a simple process that removes the barriers to home ownership.",
       },
       extra_heading_2: {
-        title: "Who Is Eligible for This Home Loan?",
+        title: "Who Can Apply for IPDC Bhalo Basha Loan?",
         title_bangla: "কাদের জন্য এই গৃহঋণ সুবিধা?",
       },
       extra_heading_3: {

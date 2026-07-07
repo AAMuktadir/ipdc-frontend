@@ -5,18 +5,14 @@
       :loanWhatWeOfferCards="homeLoanWhatWeOfferCards"
       :offerHeading="offerHeading"
     />
-    <!--    <OffersWeHave />-->
     <Eligibility
       :eligibleHeading="eligibleHeading"
       :loanEligibilities="homeLoanEligibilities"
     />
-    <!--    <Employed :employed="homeLoanForEmployed" />-->
-    <!--    <SelfEmployed :selfEmployed="homeLoanForSelfEmployed" />-->
     <TermAmount
       :loanTermAmount="homeLoanTermAmount"
       :termAmountHeading="termAmountHeading"
     />
-    <HomeLoanDrivedream />
     <RequiredDocuments
       :loanRequiredDocuments="homeLoanRequiredDocuments"
       :documentsRequiredHeading="documentsRequiredHeading"
@@ -25,13 +21,11 @@
       :loanConditions="loanConditions"
       :conditionsHeading="conditionsHeading"
     />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
     />
     <Faqs :page="page" />
-    <OngoingCampaigns :page="page" />
     <DownloadApplicationform
       :footerApplicationForm="homeLoanFooterApplicationForm"
       :page="page"
@@ -41,12 +35,26 @@
 
 <script>
 import WhatWeOffer from "../../components/WhatWeOffer";
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "home_loan");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   components: { WhatWeOffer },
   data() {
@@ -78,7 +86,8 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Progress Toward Your Own Home With A Structured And Supportive Loan Process",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",

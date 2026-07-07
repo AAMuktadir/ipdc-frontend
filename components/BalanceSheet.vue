@@ -14,12 +14,12 @@
         v-if="home_strongest_balance_sheet_heading"
         class="balance-sheet-title"
       >
-        <h1 v-if="$i18n.locale == 'en'" class="balance-title">
+        <h2 v-if="$i18n.locale == 'en'" class="balance-title">
           {{ home_strongest_balance_sheet_heading.title }}
-        </h1>
-        <h1 v-if="$i18n.locale == 'bn'" class="balance-title">
+        </h2>
+        <h2 v-if="$i18n.locale == 'bn'" class="balance-title">
           {{ home_strongest_balance_sheet_heading.title_bangla }}
-        </h1>
+        </h2>
         <p v-if="$i18n.locale == 'en'" class="balance-description">
           {{ home_strongest_balance_sheet_heading.sub_title }}
         </p>

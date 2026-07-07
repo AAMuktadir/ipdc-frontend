@@ -2,8 +2,8 @@
   <div class="ipdc-infinte">
     <HeroImage :coverImage="cover" />
     <Heading :heading="heading" />
-    <InfinitePrivileges />
-    <TravelPrivileges />
+    <InfinitePrivileges :data="infinitePrivileges" />
+    <TravelPrivileges :data="travelPrivileges" />
 
     <FeatureSection
       id="elite-card"
@@ -12,7 +12,8 @@
       :featuresTitle="eliteFeaturesTitle"
       :featuresSubTitle="eliteFeaturesSubTitle"
       :features="eliteFeatures"
-      title="Privilege Proposition"
+      :title="eliteTitle"
+      :title_bangla="eliteTitleBangla"
     />
     <FeatureSection
       id="infinite-card"
@@ -23,6 +24,8 @@
       :featuresTitle="infiniteFeaturesTitle"
       :featuresSubTitle="infiniteFeaturesSubTitle"
       :features="infiniteFeatures"
+      :title="infiniteTitle"
+      :title_bangla="infiniteTitleBangla"
     />
 
     <LifestylePartners
@@ -35,7 +38,7 @@
       :partnersList="loungeExperienceList"
     />
 
-    <FaqSection :faqs="faqs" />
+    <FaqSection />
     <TermsAndConditions />
     <Footer />
   </div>
@@ -54,28 +57,11 @@ import TermsAndConditions from "@/components/Infinite/TermsAndConditions.vue";
 import Footer from "@/components/Infinite/Footer.vue";
 
 export default {
-  async asyncData({ $axios }) {
-    try {
-      const response = await $axios.get(`/get-faqs/ipdc-infinite`);
-      const faqs = response.data.data;
-      return {
-        faqs: faqs || [],
-      };
-    } catch (error) {
-      console.error("SSR fetch failed:", error);
-      return {
-        faqs: [],
-      };
-    }
-  },
-  // layout: "blank",
   head() {
     return {
       title:
         this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-      bodyAttrs: {
-        // class: "black-bg-only",
-      },
+      bodyAttrs: {},
     };
   },
   components: {
@@ -92,177 +78,104 @@ export default {
   },
   data() {
     return {
+      // ---- non-content / UI state ----
+      showSplash: false,
+      navbarOffset: 70,
+      scrolledPastHero: false,
+      smoother: null,
+
+      // ---------------------------------------------------------------
+      // All page text now comes from GET /api/v1/get-infinite-content
+      // (see loadContent / applyContent below). The values below are only
+      // safe skeletons so the components never read undefined before the
+      // request resolves.
+      //
+      // NOTE on the cover: the admin "cover" section manages only the title
+      // text. The hero banner image is a build asset, so it is kept here and
+      // the API title is merged on top.
+      // ---------------------------------------------------------------
       cover: {
-        title: "Infinite",
-        title_bangla: "ইনফিনিট",
-      },
-      heading: {
         title: "The Infinite Experience",
-        title_bangla: "The Infinite Experience",
-        sub_title:
-          "Redefining Premium Financial Experiences with IPDC Infinite",
-        sub_title_bangla:
-          "Redefining Premium Financial Experiences with IPDC Infinite",
-        description:
-          "Step into a world where financing relationship goes beyond transactions and becomes a personalized, elevated experience. IPDC Infinite is designed for individuals who seek more convenience, more exclusivity, and more value from their financial relationships.<br>With a deep understanding of your ambitions and lifestyle, we offer bespoke financial solutions, priority services, and curated privileges that seamlessly integrate into your life. From dedicated advisory to luxury travel and lifestyle benefits, every aspect is crafted to reflect excellence.",
-        description_bangla:
-          "Step into a world where financing relationship goes beyond transactions and becomes a personalized, elevated experience. IPDC Infinite is designed for individuals who seek more convenience, more exclusivity, and more value from their financial relationships.<br>With a deep understanding of your ambitions and lifestyle, we offer bespoke financial solutions, priority services, and curated privileges that seamlessly integrate into your life. From dedicated advisory to luxury travel and lifestyle benefits, every aspect is crafted to reflect excellence.",
-        highlight:
-          "IPDC Infinite is not just a financing relationship, it’s a statement of distinction.",
-        highlight_bangla:
-          "IPDC Infinite is not just a financing relationship, it’s a statement of distinction.",
-      },
-      cover: {
-        id: 57,
-        page_id: 52,
-        type: "cover_image",
-        title: "The Elite Experience",
-        sub_title: "",
+        title_bangla: "দ্য ইনফিনিট এক্সপেরিয়েন্স",
         image_url: require("~/assets/image/infinite/hero.avif"),
         mobile_image_url: require("~/assets/image/infinite/hero.avif"),
-        button_name: null,
-        button_link: null,
-        title_bangla: "",
-        sub_title_bangla: "",
         image_url_bangla: require("~/assets/image/infinite/hero.avif"),
         mobile_image_url_bangla: require("~/assets/image/infinite/hero.avif"),
-        button_name_bangla: null,
-        status: 0,
-        deleted_at: null,
-        created_at: "2025-12-08 17:56:02",
-        updated_at: "2025-12-10 19:14:04",
       },
-      loungeExperienceHeading: {
-        title: "Infinite Lounge Experience",
-        title_bangla: "Infinite Lounge Experience",
-        sub_title: "Your Private Space for Business & Comfort",
-        sub_title_bangla: "Your Private Space for Business & Comfort",
-        description:
-          "Access exclusive lounges designed for privacy, comfort, and productivity.",
-        description_bangla:
-          "Access exclusive lounges designed for privacy, comfort, and productivity.",
-        highlight: null,
-        highlight_bangla: null,
+
+      heading: {
+        title: "",
+        title_bangla: "",
+        sub_title: "",
+        sub_title_bangla: "",
+        description: "",
+        description_bangla: "",
+        highlight: "",
+        highlight_bangla: "",
       },
-      loungeExperienceList: [
-        {
-          id: 122,
-          title: "Strategically located in key business hubs",
-          title_bangla: "Strategically located in key business hubs",
-          image: "https://ipdc.com/api/uploads/1642499285EHlrn.png",
-          button_link: null,
-        },
-        {
-          id: 123,
-          title: "Private meeting rooms for personal or professional use",
-          title_bangla:
-            "Private meeting rooms for personal or professional use",
-          image: "https://ipdc.com/api/uploads/1642499314lC2uu.png",
-          button_link: null,
-        },
-        {
-          id: 124,
-          title: "Premium ambiance for a seamless experience",
-          title_bangla: "Premium ambiance for a seamless experience",
-          image: "https://ipdc.com/api/uploads/1642499342NyTAa.png",
-          button_link: null,
-        },
-      ],
+
+      infinitePrivileges: {
+        title: "",
+        title_bangla: "",
+        sub_title: "",
+        sub_title_bangla: "",
+        description: "",
+        description_bangla: "",
+        privileges: [],
+      },
+
+      travelPrivileges: {
+        title: "",
+        title_bangla: "",
+        sub_title: "",
+        sub_title_bangla: "",
+        description: "",
+        description_bangla: "",
+        privileges: [],
+      },
+
+      // elite feature card
+      eliteTitle: "",
+      eliteTitleBangla: "",
+      eliteFeaturesTitle: { en: "", bn: "" },
+      eliteFeaturesSubTitle: "",
+      eliteFeatures: { en: [], bn: [] },
+
+      // infinite feature card
+      infiniteTitle: "",
+      infiniteTitleBangla: "",
+      infiniteFeaturesTitle: { en: "", bn: "" },
+      infiniteFeaturesSubTitle: "",
+      infiniteFeatures: { en: [], bn: [] },
 
       lifestylePartnersHeading: {
-        title: "Lifestyle Partners",
-        title_bangla: "Lifestyle Partners",
-        sub_title: "A World of Exclusive Collaborations",
-        sub_title_bangla: "A World of Exclusive Collaborations",
-        description:
-          "Gain access to a curated network of premium partners across categories:",
-        description_bangla:
-          "Gain access to a curated network of premium partners across categories:",
-        highlight:
-          "Each partnership is selected to complement your lifestyle with exclusive privileges and offers.",
-        highlight_bangla:
-          "Each partnership is selected to complement your lifestyle with exclusive privileges and offers.",
+        title: "",
+        title_bangla: "",
+        sub_title: "",
+        sub_title_bangla: "",
+        description: "",
+        description_bangla: "",
+        highlight: "",
+        highlight_bangla: "",
       },
-      lifestylePartnersList: [
-        {
-          id: 103,
-          title: "Hotels & Resorts",
-          title_bangla: "Hotels & Resorts",
-          image: "https://ipdc.com/api/uploads/durjoy_dedicated.png",
-          button_link: "cards#hotels-resorts",
-        },
-        {
-          id: 104,
-          title: "Dining",
-          title_bangla: "Dining",
-          image: "https://ipdc.com/api/uploads/durjoy_rates.png",
-          button_link: "cards#dining",
-        },
-        {
-          id: 105,
-          title: "Fashion & Lifestyle",
-          title_bangla: "Fashion & Lifestyle",
-          image: "https://ipdc.com/api/uploads/durjoy_waiver.png",
-          button_link: "cards#lifestyle",
-        },
-        {
-          id: 106,
-          title: "Beauty & Salon",
-          title_bangla: "Beauty & Salon",
-          image: "https://ipdc.com/api/uploads/durjoy_card.png",
-          button_link: "cards#health-wellness",
-        },
-        {
-          id: 107,
-          title: "Travel & Leisure",
-          title_bangla: "Travel & Leisure",
-          image: "https://ipdc.com/api/uploads/durjoy_lounge.png",
-          button_link: "cards#travel",
-        },
-        {
-          id: 108,
-          title: "Health & Wellness",
-          title_bangla: "Health & Wellness",
-          image: "https://ipdc.com/api/uploads/durjoy_pick_drop.png",
-          button_link: "cards#health-wellness",
-        },
-      ],
+      lifestylePartnersList: [],
 
-      infiniteFeaturesTitle: "IPDC Infinite",
-      infiniteFeaturesSubTitle:
-        "An ultra-premium experience crafted for distinguished individuals.",
-
-      eliteFeaturesTitle: "IPDC Elite",
-      eliteFeaturesSubTitle:
-        "Designed for customers seeking premium financing relationship with enhanced lifestyle benefits.",
-      // Dummy Features Data
-
-      eliteFeatures: [
-        "Lounge Access: 2 complimentary visits per year (with one companion)",
-        "Meet & Greet & Pick & Drop: 2 complimentary services per year",
-        {
-          title: "Travel Benefits (Conditions Apply):",
-          items: [
-            "Travel Luggage insurance (2 times per year)*",
-            "Priority hotel booking discounts*",
-          ],
-        },
-      ],
-
-      infiniteFeatures: [
-        "Lounge Access: 3 complimentary visits per year (with one companion)",
-        "Meet & Greet & Pick & Drop: 3 complimentary services per year",
-        {
-          title: "Travel Benefits (Conditions Apply):",
-          items: [
-            "Travel Luggage insurance (3 times per year)*",
-            "Priority hotel booking discounts*",
-          ],
-        },
-      ],
+      loungeExperienceHeading: {
+        title: "",
+        title_bangla: "",
+        sub_title: "",
+        sub_title_bangla: "",
+        description: "",
+        description_bangla: "",
+        highlight: "",
+        highlight_bangla: "",
+      },
+      loungeExperienceList: [],
     };
   },
-  mounted() {
+  async mounted() {
+    await this.loadContent();
+
     setTimeout(() => {
       this.showSplash = false;
 
@@ -271,12 +184,92 @@ export default {
         // this.initSectionTracking();
         this.initResponsiveAnimations();
 
-        // Initial refresh to sync everything after splash hides
+        // Initial refresh to sync everything after content + splash settle
         this.$ScrollTrigger.refresh();
       });
     }, 500);
   },
   methods: {
+    /**
+     * Pull all section content from the admin-managed endpoint.
+     * Mirrors the FaqSection axios pattern; on failure we keep the skeletons
+     * so the page structure still renders.
+     */
+    async loadContent() {
+      try {
+        const res = await this.$axios.get("/get-infinite-content");
+        const data = (res && res.data && res.data.data) || {};
+        this.applyContent(data);
+      } catch (error) {
+        console.error("Infinite content load failed:", error);
+      }
+    },
+
+    /** Map the API response (keyed by section_key) onto the component props. */
+    applyContent(data) {
+      // cover: keep the local banner image, overlay the managed title text
+      const cover = data.cover || {};
+      this.cover = {
+        ...this.cover,
+        title: cover.title || this.cover.title,
+        title_bangla: cover.title_bangla || this.cover.title_bangla,
+      };
+
+      if (data.heading) this.heading = data.heading;
+      if (data.infinite_privileges)
+        this.infinitePrivileges = data.infinite_privileges;
+      if (data.travel_privileges)
+        this.travelPrivileges = data.travel_privileges;
+
+      // feature cards are reshaped server-side into { en, bn } structures
+      const elite = data.feature_elite || {};
+      this.eliteTitle = elite.title || "";
+      this.eliteTitleBangla = elite.title_bangla || "";
+      this.eliteFeaturesTitle = elite.featuresTitle || { en: "", bn: "" };
+      this.eliteFeaturesSubTitle = elite.featuresSubTitle || "";
+      this.eliteFeatures = elite.features || { en: [], bn: [] };
+
+      const infinite = data.feature_infinite || {};
+      this.infiniteTitle = infinite.title || "";
+      this.infiniteTitleBangla = infinite.title_bangla || "";
+      this.infiniteFeaturesTitle = infinite.featuresTitle || { en: "", bn: "" };
+      this.infiniteFeaturesSubTitle = infinite.featuresSubTitle || "";
+      this.infiniteFeatures = infinite.features || { en: [], bn: [] };
+
+      // lifestyle partners: split heading vs list, inject a key id
+      const lp = data.lifestyle_partners || {};
+      this.lifestylePartnersHeading = this.pickHeading(lp);
+      this.lifestylePartnersList = this.withIds(lp.items);
+
+      // lounge experience: same shape as lifestyle partners
+      const le = data.lounge_experience || {};
+      this.loungeExperienceHeading = this.pickHeading(le);
+      this.loungeExperienceList = this.withIds(le.items);
+    },
+
+    /** Heading fields shared by the partner-style sections. */
+    pickHeading(section) {
+      return {
+        title: section.title || "",
+        title_bangla: section.title_bangla || "",
+        sub_title: section.sub_title || "",
+        sub_title_bangla: section.sub_title_bangla || "",
+        description: section.description || "",
+        description_bangla: section.description_bangla || "",
+        highlight: section.highlight || "",
+        highlight_bangla: section.highlight_bangla || "",
+      };
+    },
+
+    /** The list components use :key="item.id"; the API items have none. */
+    withIds(items) {
+      if (!Array.isArray(items)) return [];
+      return items.map((it, i) => ({
+        ...it,
+        id: it && it.id != null ? it.id : i,
+      }));
+    },
+
     initSmoothScroll() {
       this.smoother = this.$ScrollSmoother.create({
         wrapper: "#smooth-wrapper",

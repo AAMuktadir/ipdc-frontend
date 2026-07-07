@@ -14,7 +14,6 @@
       :loanEligibilities="personalLoanEligibility"
       :eligibleHeading="eligibleHeading"
     />
-    <PersonalComplacency />
     <TermAmount
       :loanTermAmount="personalLoanTermAmount"
       :termAmountHeading="termAmountHeading"
@@ -43,12 +42,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "personal_loan");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -78,12 +91,11 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Get Your Personal Loan Easily With Fast Approval And Simple Process",
         title_bangla: "আবেদন করুন এখনই ",
-        sub_title:
-          "Enjoy the flexibility and freedom of fulfilling your personal needs with IPDC Personal Loan! Let us help you turn your aspirations into achievements.",
-        sub_title_bangla:
-          "আইপিডিসি পার্সোনাল লোন নিয়ে আপনার প্রতিটি স্বপ্ন পূরণ করুন সহজে ও নিশ্চিন্তে! আপনার আকাঙ্ক্ষা পূরণে আমরা পাশে আছি।",
+        sub_title: "",
+        sub_title_bangla: "",
       },
     };
   },

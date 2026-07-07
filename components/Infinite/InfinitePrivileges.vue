@@ -8,189 +8,48 @@
 
       <div class="hero-content container" ref="heroContent">
         <div class="left">
-          <h2>Infinite Privileges</h2>
-          <h3>Tailored for Those Who Expect More</h3>
+          <h2>
+            {{ isEn ? data.title : data.title_bangla }}
+          </h2>
+          <h3>
+            {{ isEn ? data.sub_title : data.sub_title_bangla }}
+          </h3>
 
           <p>
-            At IPDC Infinite, every privilege is thoughtfully designed to
-            enhance your financial journey and lifestyle.
+            {{ isEn ? data.description : data.description_bangla }}
           </p>
         </div>
       </div>
     </div>
 
-    <!-- HERO - TWO IMAGE -->
-    <!-- <div class="hero">
-      <div class="hero-side left" ref="heroLeft">
-        <img src="~/assets/image/infinite/elite-hero1.avif" />
-      </div>
-
-      <div class="hero-side right" ref="heroRight">
-        <img src="~/assets/image/infinite/elite-hero2.avif" />
-      </div>
-
-      <div class="hero-overlay" ref="heroOverlay"></div>
-
-      <div class="hero-content left-content" ref="heroContentLeft">
-        <div class="left">
-          <h2>Infinite Privileges</h2>
-          <h3>Tailored for Those Who Expect More</h3>
-          <p>
-            At IPDC Infinite, every privilege is thoughtfully designed to
-            enhance your financial journey and lifestyle.
-          </p>
-        </div>
-      </div>
-
-      <div class="hero-content right-content" ref="heroContentRight">
-        <div class="left">
-          <h2>Infinite Privileges</h2>
-          <h3>Tailored for Those Who Expect More</h3>
-          <p>
-            At IPDC Infinite, every privilege is thoughtfully designed to
-            enhance your financial journey and lifestyle.
-          </p>
-        </div>
-      </div>
-    </div> -->
-
     <!-- CARDS -->
     <div class="cards container" ref="cards">
       <!-- CARD -->
-      <div class="card card-item">
+      <div class="card card-item" v-for="privilege in data.privileges">
         <div class="card-head">
-          <img
-            class="icon"
-            src="~/assets/image/infinite/icons/1.png"
-            alt="Financing Icon"
-          />
-          <h4>Financial Privileges</h4>
+          <img class="icon" :src="privilege.icon" alt="Icon" />
+          <h4>
+            {{ isEn ? privilege.title : privilege.title_bangla }}
+          </h4>
         </div>
 
         <div class="card-feat">
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test1.png"
-              class="item-icon"
-            />
+          <div class="item" v-for="listItem in privilege.list">
+            <img :src="listItem.icon" class="item-icon" />
 
             <div class="item-content">
-              <h5>Dedicated Relationship Manager</h5>
-              <p>A personal financial expert to guide your needs.</p>
-            </div>
-          </div>
-
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test2.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Doorstep Services</h5>
-              <p>Convenient collection and delivery of documents.</p>
-            </div>
-          </div>
-
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test3.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Preferential Pricing</h5>
-              <p>Exclusive rates across selected products.</p>
+              <h5>
+                {{ isEn ? listItem.title : listItem.title_bangla }}
+              </h5>
+              <p>
+                {{ isEn ? listItem.description : listItem.description_bangla }}
+              </p>
             </div>
           </div>
         </div>
 
         <div class="card-img-wrap">
-          <img src="~/assets/image/infinite/finance.avif" class="card-img" />
-        </div>
-      </div>
-
-      <!-- CARD -->
-      <div class="card card-item">
-        <div class="card-head">
-          <img
-            class="icon"
-            src="~/assets/image/infinite/icons/2.png"
-            alt="Financing Icon"
-          />
-          <h4>Lifestyle Privileges</h4>
-        </div>
-
-        <div class="card-feat">
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test4.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Buy 1 Get 1 Dining</h5>
-              <p>Enjoy curated premium restaurant experiences.</p>
-            </div>
-          </div>
-
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test5.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Exclusive Brand Discounts</h5>
-              <p>Special offers at leading lifestyle brands.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-img-wrap">
-          <img src="~/assets/image/infinite/dining.avif" class="card-img" />
-        </div>
-      </div>
-
-      <!-- CARD -->
-      <div class="card card-item">
-        <div class="card-head">
-          <img
-            class="icon"
-            src="~/assets/image/infinite/icons/3.png"
-            alt="Financing Icon"
-          />
-          <h4>Health & Wellness</h4>
-        </div>
-
-        <div class="card-feat">
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test6.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Health Screening</h5>
-              <p>Annual check-ups at premium partners.</p>
-            </div>
-          </div>
-
-          <div class="item">
-            <img
-              src="~/assets/image/infinite/icons/test7.png"
-              class="item-icon"
-            />
-
-            <div class="item-content">
-              <h5>Gym & Spa Benefits</h5>
-              <p>Access to elite wellness facilities.</p>
-            </div>
-          </div>
-        </div>
-
-        <div class="card-img-wrap">
-          <img src="~/assets/image/infinite/wellness.avif" class="card-img" />
+          <img :src="privilege.image" class="card-img" />
         </div>
       </div>
     </div>
@@ -204,8 +63,19 @@ export default {
       observer: null,
     };
   },
+  props: {
+    data: {
+      type: Object,
+      default: () => ({}),
+    },
+  },
   mounted() {
     this.initObserver();
+  },
+  computed: {
+    isEn() {
+      return this.$i18n.locale === "en";
+    },
   },
   methods: {
     initObserver() {
@@ -259,73 +129,6 @@ export default {
             duration: 1,
           }
         );
-
-        // HERO - TWO IMAGE
-        // tl.fromTo(
-        //   this.$refs.heroLeft,
-        //   {
-        //     x: "50%",
-        //     opacity: 0,
-        //   },
-        //   {
-        //     x: "0%",
-        //     opacity: 1,
-        //     duration: 0.5,
-        //   }
-        // );
-
-        // tl.fromTo(
-        //   this.$refs.heroRight,
-        //   {
-        //     x: "-50%",
-        //     opacity: 0,
-        //   },
-        //   {
-        //     x: "0%",
-        //     opacity: 1,
-        //     duration: 0.5,
-        //   },
-        //   "-=0.5"
-        // );
-
-        // tl.fromTo(
-        //   this.$refs.heroOverlay,
-        //   { opacity: 0 },
-        //   { opacity: 1, duration: 0.5 },
-        //   "-=0.5"
-        // );
-
-        // tl.fromTo(
-        //   this.$refs.heroContentLeft,
-        //   {
-        //     opacity: 0,
-        //     y: 30,
-        //     filter: "blur(6px)",
-        //   },
-        //   {
-        //     opacity: 1,
-        //     y: 0,
-        //     filter: "blur(0px)",
-        //     duration: 0.9,
-        //   },
-        //   "-=0.6"
-        // );
-
-        // tl.fromTo(
-        //   this.$refs.heroContentRight,
-        //   {
-        //     opacity: 0,
-        //     y: 30,
-        //     filter: "blur(6px)",
-        //   },
-        //   {
-        //     opacity: 1,
-        //     y: 0,
-        //     filter: "blur(0px)",
-        //     duration: 0.9,
-        //   },
-        //   "-=0.8"
-        // );
 
         // CARDS (real stagger)
         tl.fromTo(
@@ -395,61 +198,6 @@ export default {
 .hero-content .left {
   max-width: 520px;
 }
-
-/* HERO - TWO IMAGE */
-/* .hero {
-  position: relative;
-  height: 100vh;
-  display: flex;
-  overflow: hidden;
-}
-
-.hero-side {
-  width: 50%;
-  height: 100%;
-  overflow: hidden;
-  position: relative;
-}
-
-.hero-side img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.hero-overlay {
-  position: absolute;
-  inset: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(10, 22, 34, 0.4) 20%,
-    rgba(26, 23, 24, 0.85) 30%,
-    rgb(26, 23, 24) 50%,
-    rgba(26, 23, 24, 0.85) 70%,
-    rgba(10, 22, 34, 0.4) 80%,
-    rgba(0, 0, 0, 0) 100%
-  );
-  z-index: 2;
-}
-
-.hero-content {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  z-index: 3;
-  color: #fff;
-  max-width: 40%;
-}
-
-.left-content {
-  left: 8%;
-}
-
-.right-content {
-  right: 8%;
-  text-align: right;
-} */
 
 .hero h2 {
   font-size: 3rem;

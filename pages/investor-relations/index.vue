@@ -1,11 +1,6 @@
 <template>
   <div>
     <CoverImage :page="page" />
-    <!-- <CoverImageWithoutButtonBelow :page="page" /> -->
-
-    <!-- <RetailDeposit
-      :ratesForRetailDepositProduct="ratesForRetailDepositProduct"
-    /> -->
 
     <StrongestBalance
       :balanceSheetTitle="balanceSheetTitle"
@@ -28,12 +23,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "investor_relations");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -92,11 +101,11 @@ export default {
       }
     },
     async getGrowthChartData() {
-      const response = await this.$axios.get(
-        `https://ipdc.com/demo/api/get-extra-mile-data.php`
+      const response2 = await this.$axios.get(
+        `/get-extra-mile-data`
       );
-      this.growthChart = response.data.data.investorRelationGrowthChart;
-      this.asOnDate = response.data.data.asOnDate;
+      this.growthChart = response2.data.data.investorRelationGrowthChart;
+      this.asOnDate = response2.data.data.asOnDate;
     },
   },
 };

@@ -1,13 +1,13 @@
 <template>
   <section class="youtube-playlist container">
     <div v-if="youtubePlaylistHeading" class="youtube-playlist-title">
-      <h1>
+      <h2>
         {{
           $i18n.locale == "en"
             ? youtubePlaylistHeading.title
             : youtubePlaylistHeading.title_bangla
         }}
-      </h1>
+      </h2>
       <p>
         {{
           $i18n.locale == "en"
@@ -80,7 +80,7 @@ export default {
   &-title {
     text-align: center;
     padding-top: 50px;
-    h1 {
+    h2 {
       font-weight: bold;
       font-size: 36px;
       line-height: 133%;
@@ -151,7 +151,7 @@ export default {
   .youtube-playlist {
     &-title {
       padding-top: 50px;
-      h1 {
+      h2 {
         font-size: 25px;
         .font-bn & {
           font-size: 30px;

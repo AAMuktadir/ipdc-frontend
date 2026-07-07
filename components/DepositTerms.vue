@@ -2,13 +2,13 @@
   <section class="container">
     <div class="terms-condition">
       <div class="terms-heading">
-        <h1 class="terms-title">
+        <h2 class="terms-title">
           {{
             $i18n.locale == "en"
               ? "Terms and Conditions"
               : "শর্তাবলি ও সাধারণ নির্দেশনা"
           }}
-        </h1>
+        </h2>
       </div>
       <div class="documents-details">
         <a

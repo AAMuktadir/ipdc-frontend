@@ -60,8 +60,6 @@
         </div>
         <div class="quick-links">
           <ul role="list" class="footer-menu">
-            <!-- <li><nuxt-link href="/">About Us</nuxt-link></li>
-          <li><nuxt-link href="/">Loans</nuxt-link></li> -->
             <li class="footer-menu-list list-circle">
               <a class="footer-menu-list-link circle">
                 {{ $i18n.locale == "en" ? "About Us" : "আমাদের সম্পর্কে" }}
@@ -121,28 +119,6 @@
                     }}
                   </nuxt-link>
                 </li>
-
-                <!-- <li class="dropdown-menu-lists">
-                  <nuxt-link
-                    class="dropdown-menu-lists-links"
-                    :to="localePath('/covid-19')"
-                  >
-                    {{ $i18n.locale == "en" ? "COVID 19" : "কোভিড -১৯" }}
-                  </nuxt-link>
-                </li> -->
-
-                <!-- <li class="dropdown-menu-lists">
-                  <nuxt-link
-                    class="dropdown-menu-lists-links"
-                    :to="localePath('/digital-presence')"
-                  >
-                    {{
-                      $i18n.locale == "en"
-                        ? "Digital Presence"
-                        : "ডিজিটাল প্রেজেন্স"
-                    }}
-                  </nuxt-link>
-                </li> -->
               </ul>
             </li>
             <li class="footer-menu-list">
@@ -195,13 +171,6 @@
                 >{{ $i18n.locale == "en" ? "Awards" : "পুরস্কার" }}</nuxt-link
               >
             </li>
-            <!-- <li class="footer-menu-list">
-              <nuxt-link
-                class="footer-menu-list-link"
-                :to="localePath('/contact-us')"
-                >{{ $i18n.locale == "en" ? "Branches" : "শাখাসমূহ" }}</nuxt-link
-              >
-            </li> -->
             <li class="footer-menu-list list-circle">
               <a class="footer-menu-list-link circle">
                 {{ $i18n.locale == "en" ? "Loans" : "লোন" }}
@@ -309,46 +278,19 @@
           </ul>
 
           <ul role="list" class="footer-menu">
-            <!-- <li class="footer-menu-list">
+            <li class="footer-menu-list">
               <a
                 class="footer-menu-list-link"
                 target="_blank"
-                href="http://ipdcecalendar.com/"
+                :href="footerFiles.esrm?.file_url"
               >
                 {{
                   $i18n.locale == "en"
-                    ? "IPDC Calender"
-                    : "আইপিডিসি ক্যালেন্ডার"
+                    ? "Environmental and Social Risk Management"
+                    : "পরিবেশগত ও সামাজিক ঝুঁকি ব্যবস্থাপনা"
                 }}
               </a>
-            </li> -->
-            <!-- <li class="footer-menu-list">
-              <a
-                class="footer-menu-list-link"
-                target="_blank"
-                href="https://www.ipdcbd.com/40/"
-              >
-                {{ $i18n.locale == "en" ? "IPDC 40" : "আইপিডিসি ৪০" }}
-              </a>
-            </li> -->
-            <li class="footer-menu-list">
-              <a
-                v-if="$i18n.locale == 'en'"
-                class="footer-menu-list-link"
-                target="_blank"
-                :href="esrmFile.file_link"
-              >
-                Environmental and Social Risk Management
-              </a>
-              <a
-                v-if="$i18n.locale == 'bn'"
-                class="footer-menu-list-link"
-                target="_blank"
-                :href="esrmFile.file_link_bn"
-                >পরিবেশগত ও সামাজিক ঝুঁকি ব্যবস্থাপনা</a
-              >
             </li>
-            <!-- <li><nuxt-link to="/">News</nuxt-link></li> -->
             <li class="footer-menu-list">
               <nuxt-link
                 class="footer-menu-list-link"
@@ -388,33 +330,11 @@
                 }}
               </nuxt-link>
             </li>
-            <!-- <li class="footer-menu-list">
-              <a
-                class="footer-menu-list-link"
-                target="_blank"
-                href="https://www.ipdcbd.com/national-mourning-day-2023"
-              >
-                {{
-                  $i18n.locale == "en"
-                    ? "National Mourning Day 2023"
-                    : "জাতীয় শোক দিবস ২০২৩"
-                }}
-              </a>
-            </li> -->
-            <!-- <li class="footer-menu-list">
-              <a
-                class="footer-menu-list-link"
-                target="_blank"
-                href="https://www.ipdcbd.com/smart-rate"
-              >
-                {{ $i18n.locale == "en" ? "Smart Rate" : "স্মার্ট রেট" }}
-              </a>
-            </li> -->
             <li class="footer-menu-list">
               <a
                 class="footer-menu-list-link"
                 target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/Cluster_Financing_Policy.pdf"
+                :href="footerFiles.cluster_finance?.file_url"
               >
                 {{
                   $i18n.locale == "en"
@@ -439,7 +359,7 @@
               <a
                 class="footer-menu-list-link"
                 target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/IPDC-Deposit-Slip-MTB.pdf"
+                :href="footerFiles.deposit_slip?.file_url"
               >
                 {{
                   $i18n.locale == "en"
@@ -473,18 +393,12 @@
         <div class="bottom-links">
           <ul role="list">
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/Terms_of_use.pdf"
-              >
+              <a target="_blank" :href="footerFiles.terms_of_use?.file_url">
                 {{ $i18n.locale == "en" ? "Terms of Use" : "ব্যবহারের শর্ত" }}
               </a>
             </li>
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/AML_CFT_policy.pdf"
-              >
+              <a target="_blank" :href="footerFiles.aml_cft_policy?.file_url">
                 {{
                   $i18n.locale == "en"
                     ? "AML & CFT Policy"
@@ -513,9 +427,7 @@
               </a>
             </li>
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/IPDC_Logo.ai"
+              <a target="_blank" :href="footerFiles.ipdc_logo?.file_url"
                 ><img
                   src="~assets/icons/down.svg"
                   alt="icon"
@@ -525,10 +437,7 @@
               </a>
             </li>
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/Disclosure_on_CAMD.pdf"
-              >
+              <a target="_blank" :href="footerFiles.camd?.file_url">
                 {{
                   $i18n.locale == "en"
                     ? "Disclosure on CAMD"
@@ -537,10 +446,7 @@
               </a>
             </li>
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/IPDC_Finance_calendar_current.pdf"
-              >
+              <a target="_blank" :href="footerFiles.calendar?.file_url">
                 {{
                   $i18n.locale == "en"
                     ? "IPDC Calender"
@@ -549,10 +455,7 @@
               </a>
             </li>
             <li>
-              <a
-                target="_blank"
-                href="https://ipdc.com/api/uploads/DownloadableFile/SOC_current.pdf"
-              >
+              <a target="_blank" :href="footerFiles.soc?.file_url">
                 {{
                   $i18n.locale == "en"
                     ? "Schedule of Fees & Charges"
@@ -560,13 +463,6 @@
                 }}
               </a>
             </li>
-            <!-- <li><a href="#">Information Booth</a></li>
-          <li><a href="#">Disclosure on CAMD</a></li>
-          <li><a href="#">Schedule of fees & charges</a></li> -->
-            <!-- <li>
-            <a href="#">More</a>
-            <a href="#" class="more"><img src="~assets/image/rightarrow.png" alt=""></a>
-          </li> -->
           </ul>
         </div>
         <div class="social-links">
@@ -743,8 +639,7 @@
 export default {
   data() {
     return {
-      footerFile: Object,
-      esrmFile: [],
+      footerFiles: {},
       informationBooth: [],
       complaintCell: [],
     };
@@ -758,9 +653,8 @@ export default {
     },
   },
   created() {
-    // this.getNisFile();
+    this.getFooterFiles();
     this.getExtraData();
-    this.getESRMFile();
   },
   methods: {
     toBanglaNumber(number) {
@@ -771,28 +665,18 @@ export default {
         .map((d) => bnDigits[d])
         .join("");
     },
-    async getNisFile() {
+    async getFooterFiles() {
       const response = await this.$axios.get("/get-footer-component");
-      this.footerFile = response.data.nis_file;
+      this.footerFiles = response.data.files;
     },
     async getExtraData() {
       try {
-        const response = await this.$axios.get(
-          // "http://localhost/api/v1/get-extra-data.php"
-          `https://ipdc.com/demo/api/get-extra-data.php`
-        );
+        const response = await this.$axios.get("/get-extra-data");
         this.informationBooth = response.data.data.informationBooth;
         this.complaintCell = response.data.data.complaintCell;
-        // console.log(this.informationBooth);
-        // console.log(this.complaintCell);
-        // console.log(response);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
-    },
-    async getESRMFile() {
-      const response = await this.$axios.get("/get-esrm-file");
-      this.esrmFile = response.data.data;
     },
   },
 };
@@ -862,7 +746,6 @@ export default {
       display: inline-block;
       margin-bottom: 20px;
       img {
-        // width: 100px;
         height: 40px;
       }
     }
@@ -909,7 +792,7 @@ export default {
               font-weight: 500;
               font-size: 18px;
               line-height: 122.22%;
-              color: #f467b2;
+              color: #e5027b;
               .font-bn & {
                 font-size: 25px;
               }
@@ -919,7 +802,7 @@ export default {
               font-weight: normal;
               font-size: 14px;
               line-height: 157.1%;
-              color: #f467b2;
+              color: #e5027b;
               .font-bn & {
                 font-size: 19px;
               }
@@ -934,10 +817,8 @@ export default {
       justify-content: space-between;
       .footer-menu {
         padding: 0;
-        // flex-basis: 32%;
         &-list {
           position: relative;
-          // margin-right: 30px;
           margin-bottom: 5px;
           .dropdown-menu {
             display: none;
@@ -947,7 +828,6 @@ export default {
             top: 20px;
             left: 0;
             width: 150px;
-            // background: rgba($color: #ffffff, $alpha: 0.8);
             background: #ffffff;
             animation: footerDropdownAnimation 0.6s ease-in-out forwards;
             &-lists {
@@ -1165,8 +1045,6 @@ export default {
       flex-direction: column;
       .short-description-and-contacts {
         flex-basis: 50%;
-        // .short-description {
-        // }
         .contacts {
           flex-direction: column;
           margin-bottom: 30px;
@@ -1174,24 +1052,12 @@ export default {
             margin-bottom: 40px;
             .icon {
               margin-right: 10px;
-              // img {
-              // }
             }
-            // .info {
-            //   h5 {
-            //   }
-            //   p {
-            //   }
-            // }
           }
         }
       }
       .quick-links {
         flex-direction: column;
-        // ul {
-        //   li {
-        //   }
-        // }
       }
     }
 
@@ -1218,23 +1084,11 @@ export default {
           flex-direction: column;
           margin-top: 10px;
           margin-left: -35px;
-          // li {
-          //   a {
-          //   }
-          // }
         }
       }
       .social-links {
         margin-top: 5px;
         order: 2;
-        // ul {
-        //   li {
-        //     a {
-        //       img {
-        //       }
-        //     }
-        //   }
-        // }
       }
     }
   }
@@ -1248,8 +1102,6 @@ export default {
       flex-direction: column;
       .short-description-and-contacts {
         flex-basis: 50%;
-        // .short-description {
-        // }
         .contacts {
           flex-direction: column;
           margin-bottom: 30px;
@@ -1257,24 +1109,12 @@ export default {
             margin-bottom: 40px;
             .icon {
               margin-right: 10px;
-              // img {
-              // }
             }
-            // .info {
-            //   h5 {
-            //   }
-            //   p {
-            //   }
-            // }
           }
         }
       }
       .quick-links {
         flex-direction: column;
-        // ul {
-        //   li {
-        //   }
-        // }
       }
     }
 
@@ -1301,23 +1141,11 @@ export default {
           flex-direction: column;
           margin-top: 10px;
           margin-left: -35px;
-          // li {
-          //   a {
-          //   }
-          // }
         }
       }
       .social-links {
         margin-top: 5px;
         order: 2;
-        // ul {
-        //   li {
-        //     a {
-        //       img {
-        //       }
-        //     }
-        //   }
-        // }
       }
     }
   }

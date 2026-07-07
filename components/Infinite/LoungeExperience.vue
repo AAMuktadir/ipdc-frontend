@@ -19,7 +19,11 @@
             class="offer-description"
             v-html="pageHeading.sub_title_bangla"
           ></h3>
-          <p v-html="pageHeading.description"></p>
+          <p v-if="$i18n.locale == 'en'" v-html="pageHeading.description"></p>
+          <p
+            v-if="$i18n.locale == 'bn'"
+            v-html="pageHeading.description_bangla"
+          ></p>
         </div>
         <div
           v-if="partnersList.length > 0"

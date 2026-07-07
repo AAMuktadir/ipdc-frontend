@@ -2,12 +2,12 @@
   <div class="container">
     <div class="deposit-offer">
       <div class="deposit-offer-title" v-if="offerHeading">
-        <h1 v-if="$i18n.locale == 'en'" class="offer-title">
+        <h2 v-if="$i18n.locale == 'en'" class="offer-title">
           {{ offerHeading.title }}
-        </h1>
-        <h1 v-if="$i18n.locale == 'bn'" class="offer-title">
+        </h2>
+        <h2 v-if="$i18n.locale == 'bn'" class="offer-title">
           {{ offerHeading.title_bangla }}
-        </h1>
+        </h2>
         <p
           v-if="$i18n.locale == 'en'"
           class="offer-description"

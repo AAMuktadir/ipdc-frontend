@@ -31,10 +31,7 @@ export default {
   methods: {
     async getFormDownloadData() {
       try {
-        const response = await this.$axios.get(
-          // "http://localhost/api/v1/get-form-download-data.php"
-          `https://ipdc.com/demo/api/get-form-download-data.php`
-        );
+        const response = await this.$axios.get("/get-form-download-data");
         this.personData = response.data.data.formDownload;
       } catch (error) {
         console.error("Error fetching data:", error);

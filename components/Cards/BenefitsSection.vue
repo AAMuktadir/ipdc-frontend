@@ -11,7 +11,9 @@
         <div
           class="benefits-header w-100 d-flex justify-content-between align-items-center"
         >
-          <h4 class="mb-0">{{ selectedItem?.partnerName }}</h4>
+          <h4 class="mb-0">
+            {{ pick(selectedItem?.partnerName, selectedItem?.partnerName_bangla) }}
+          </h4>
           <button class="benefits-close" @click="close()">×</button>
         </div>
       </template>
@@ -20,32 +22,39 @@
         <img
           v-if="selectedItem"
           :src="getItemImage(selectedItem, benefits[activeGridIndex].id)"
-          :alt="selectedItem.partnerName"
+          :alt="pick(selectedItem.partnerName, selectedItem.partnerName_bangla)"
           class="benefits-img"
           :style="getItemBG(selectedItem, benefits[activeGridIndex].id)"
         />
 
         <!-- Offer Description -->
-        <ul class="benefits-description" v-if="selectedItem?.offerDescription">
-          <li v-for="(line, i) in selectedItem.offerDescription" :key="i">
-            {{ line }}
-          </li>
+        <ul class="benefits-description" v-if="modalOfferLines.length">
+          <li v-for="(line, i) in modalOfferLines" :key="i">{{ line }}</li>
         </ul>
 
         <!-- Address -->
-        <p class="benefits-meta" v-if="selectedItem?.address">
-          <strong>Address:</strong> {{ selectedItem.address[0] }}
+        <p class="benefits-meta" v-if="modalAddressLines.length">
+          <strong>{{ $i18n.locale == "en" ? "Address:" : "ঠিকানা:" }}</strong>
+          <template v-for="(addr, i) in modalAddressLines">
+            <br v-if="i > 0" :key="'addr-br-' + i" />
+            <span :key="'addr-' + i">{{ addr }}</span>
+          </template>
         </p>
 
         <!-- Expiry -->
         <p class="benefits-meta" v-if="selectedItem?.expiryDate">
-          <strong>Expiry Date:</strong> {{ selectedItem.expiryDate }}
+          <strong>{{
+            $i18n.locale == "en" ? "Expiry Date:" : "মেয়াদ শেষ:"
+          }}</strong>
+          {{ selectedItem.expiryDate }}
         </p>
       </div>
     </b-modal>
 
     <div class="header-wrap" ref="header">
-      <h2 class="title-gradient">Offers</h2>
+      <h2 class="title-gradient">
+        {{ $i18n.locale == "en" ? "Offers" : "অফারসমূহ" }}
+      </h2>
     </div>
 
     <div class="benefits-container">
@@ -65,13 +74,26 @@
                   currentIndex === index ? "−" : "+"
                 }}</span>
               </div>
-              <span class="benefit-label">{{ benefit.title }}</span>
+              <span class="benefit-label">
+                {{
+                  $i18n.locale == "en" ? benefit.title : benefit.title_bangla
+                }}
+              </span>
             </div>
             <div v-show="currentIndex === index" class="benefit-body">
-              <ul class="description-list">
-                <li v-for="(line, i) in benefit.description" :key="i">
-                  {{ line }}
-                </li>
+              <ul class="description-list" v-if="$i18n.locale == 'en'">
+                <li
+                  v-for="(line, i) in benefit.description"
+                  :key="i"
+                  v-html="line"
+                ></li>
+              </ul>
+              <ul class="description-list" v-else>
+                <li
+                  v-for="(line, i) in benefit.description_bangla"
+                  :key="i"
+                  v-html="line"
+                ></li>
               </ul>
             </div>
           </div>
@@ -82,7 +104,9 @@
               <div class="icon-circle">
                 <span class="plus">→</span>
               </div>
-              <span class="benefit-label">All Offers</span>
+              <span class="benefit-label">{{
+                $i18n.locale == "en" ? "All Offers" : "সকল অফার"
+              }}</span>
             </div>
           </div>
         </div>
@@ -112,7 +136,9 @@
                     :style="getItemBG(item, benefits[activeGridIndex].id)"
                   />
                 </div>
-                <p class="grid-text">{{ item.partnerName }}</p>
+                <p class="grid-text">
+                  {{ pick(item.partnerName, item.partnerName_bangla) }}
+                </p>
               </div>
             </transition-group>
 
@@ -184,8 +210,34 @@ export default {
 
       return this.isExpanded ? currentItems : currentItems.slice(0, 9);
     },
+    modalOfferLines() {
+      if (!this.selectedItem) return [];
+      return this.pickArr(
+        this.selectedItem.offerDescription,
+        this.selectedItem.offerDescription_bangla
+      ).filter(Boolean);
+    },
+    modalAddressLines() {
+      if (!this.selectedItem) return [];
+      return this.pickArr(
+        this.selectedItem.address,
+        this.selectedItem.address_bangla
+      ).filter(Boolean);
+    },
   },
   methods: {
+    // Locale picker with graceful fallback to the other language.
+    pick(en, bn) {
+      if (this.$i18n.locale === "en") return en || bn || "";
+      return bn || en || "";
+    },
+    // Same as pick() but for array-shaped fields (offer lines, address lines).
+    pickArr(en, bn) {
+      const e = Array.isArray(en) ? en : [];
+      const b = Array.isArray(bn) ? bn : [];
+      if (this.$i18n.locale === "en") return e.length ? e : b;
+      return b.length ? b : e;
+    },
     async getBenefits() {
       try {
         const response = await this.$axios.get(`/get-card-contents`);

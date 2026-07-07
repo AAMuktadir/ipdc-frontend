@@ -2,11 +2,11 @@
   <section class="additional">
     <div class="container" v-if="specialNote">
       <div class="additional-details">
-        <h1 class="additional-details-title">
+        <h2 class="additional-details-title">
           {{
             $i18n.locale == "en" ? specialNote.title : specialNote.title_bangla
           }}
-        </h1>
+        </h2>
         <p class="additional-details-description">
           {{
             $i18n.locale == "en"

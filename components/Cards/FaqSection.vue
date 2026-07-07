@@ -2,7 +2,13 @@
   <section id="faq-section" class="faq-section">
     <div class="container">
       <div class="header-wrap">
-        <h2 class="title-gradient">Frequently Asked Questions</h2>
+        <h2 class="title-gradient">
+          {{
+            $i18n.locale == "en"
+              ? "Frequently Asked Questions"
+              : "বহুল জিজ্ঞাসিত প্রশ্নসমূহ"
+          }}
+        </h2>
       </div>
 
       <div class="content-wrapper">
@@ -16,8 +22,11 @@
             ref="faqItems"
           >
             <div class="faq-header">
-              <span class="sl-box">{{ (index + 1) | formatIndex }}</span>
-              <h3 class="question">{{ faq.question }}</h3>
+              <span class="sl-box">{{ formatSerial(index) }}</span>
+              <h3 class="question" v-if="$i18n.locale == 'en'">
+                {{ faq.question }}
+              </h3>
+              <h3 class="question" v-else>{{ faq.question_bangla }}</h3>
             </div>
 
             <transition
@@ -28,9 +37,16 @@
               @after-leave="endTransition"
             >
               <div v-show="activeIndex === index" class="faq-answer-container">
-                <div class="faq-answer-content" v-html="faq.answer">
-                  <!-- <p>{{ faq.answer }}</p> -->
-                </div>
+                <div
+                  class="faq-answer-content"
+                  v-if="$i18n.locale == 'en'"
+                  v-html="faq.answer"
+                ></div>
+                <div
+                  class="faq-answer-content"
+                  v-else
+                  v-html="faq.answer_bangla"
+                ></div>
               </div>
             </transition>
           </div>
@@ -41,13 +57,16 @@
             class="orbit-container"
             @pointerdown="handlePointerDown"
             @pointerup="handlePointerUp"
+            @mouseenter="pauseAutoplay"
+            @mouseleave="resumeAutoplay"
             style="touch-action: none; cursor: grab"
           >
             <div
               v-for="(card, i) in stackCards"
               :key="i"
               class="orbit-card"
-              :class="[getOrbitClass(i), { 'portrait-card': card.isPortrait }]"
+              :class="{ 'is-active': currentCardIndex === i, 'portrait-card': card.isPortrait }"
+              :style="getOrbitStyle(i)"
             >
               <div
                 class="card-inner"
@@ -57,7 +76,6 @@
               </div>
             </div>
           </div>
-          <!-- <div class="glow-element"></div> -->
         </div>
       </div>
     </div>
@@ -66,78 +84,19 @@
 
 <script>
 export default {
-  props: {
-    faqs: {
-      type: Array,
-      default: () => [],
-    },
-  },
-  filters: {
-    formatIndex(val) {
-      return val < 10 ? `0${val}` : val;
-    },
-  },
   data() {
     return {
+      faqs: [],
+      faqHeading: {},
       activeIndex: 0,
       currentCardIndex: 0,
       autoplayInterval: null,
-      touchStartX: 0,
-      touchEndX: 0,
-      minSwipeDistance: 50, // Minimum pixels to trigger swipe
+      touchStartY: 0,
+      touchEndY: 0,
+      minSwipeDistance: 50,
       observer: null,
-      // faqs: [
-      //   {
-      //     question: "What is the IPDC Ucchash Card?",
-      //     answer:
-      //       "The IPDC Ucchash Card is a privilege card that allows you to enjoy exclusive discounts, partner offers, and value-added services across various lifestyle categories.",
-      //   },
-      //   {
-      //     question: "Is this a credit or debit card?",
-      //     answer:
-      //       "No. This is not a payment card. It cannot be used for transactions or withdrawals. It is only used to avail privileges and offers.",
-      //   },
-      //   {
-      //     question: "Who is eligible for the Ucchash Card?",
-      //     answer:
-      //       "All IPDC retail customers are eligible. Cards are issued based on your segment.",
-      //   },
-      //   {
-      //     question: "What benefits will I get?",
-      //     answer:
-      //       "You can enjoy offers across dining, travel, healthcare, electronics, lifestyle shopping, education, and others. Benefits vary depending on partner and availability.",
-      //   },
-      //   {
-      //     question: "How do I use the card?",
-      //     answer:
-      //       "Visit a partner outlet, show your card, the merchant scans the QR/barcode, and once verified, you can enjoy the offer.",
-      //   },
-      //   {
-      //     question: "Is there any cost for the card?",
-      //     answer:
-      //       "There is a Service Reimbursement Fee depending on your card type. Please contact your Relationship Manager or IPDC for details.",
-      //   },
-      //   {
-      //     question: "What should I do if I lose my card?",
-      //     answer:
-      //       "Immediately inform IPDC via Customer Care or your RM. A replacement card can be issued with applicable charges.",
-      //   },
-      //   {
-      //     question: "Are the offers always available?",
-      //     answer:
-      //       "Offers depend on partner availability, validity period, and terms & conditions. IPDC may update or change offers from time to time.",
-      //   },
-      //   {
-      //     question: "How will I know about new offers?",
-      //     answer:
-      //       "You will be informed through SMS, Email, IPDC website/social media, and RM updates.",
-      //   },
-      //   {
-      //     question: "Can I use the card outside Bangladesh?",
-      //     answer:
-      //       "Currently, the card is designed for partner offers within Bangladesh unless specified otherwise.",
-      //   },
-      // ],
+      isMobile: false,
+      prefersReducedMotion: false,
       stackCards: [
         {
           img: require("~/assets/image/card/jagoo_card_front.avif"),
@@ -154,24 +113,53 @@ export default {
         {
           img: require("~/assets/image/card/infinite_card_front.avif"),
           isPortrait: true,
-        }, // 316x504 Portrait
+        },
+        {
+          img: require("~/assets/image/card/progga_card_front.avif"),
+          isPortrait: false,
+        },
+        {
+          img: require("~/assets/image/card/protisruti_card_front.avif"),
+          isPortrait: false,
+        },
       ],
     };
   },
-  mounted() {
+  async mounted() {
+    this.prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    this.updateViewport();
+    window.addEventListener("resize", this.updateViewport);
+    await this.getFaqByPage();
     this.startAutoplay();
     this.initFaqObserver();
   },
   beforeDestroy() {
     clearInterval(this.autoplayInterval);
+    window.removeEventListener("resize", this.updateViewport);
   },
   methods: {
+    updateViewport() {
+      this.isMobile = window.innerWidth <= 768;
+    },
+    async getFaqByPage() {
+      try {
+        const response = await this.$axios.get(`/get-faqs/cards`);
+        this.faqs = response.data.data;
+        this.faqHeading = response.data.faqHeading[0];
+      } catch (error) {
+        console.log("Error fetching getFaqByPage:", error);
+      }
+    },
+    formatSerial(index) {
+      const serial = index < 9 ? `0${index + 1}` : `${index + 1}`;
+      if (this.$i18n.locale !== "bn") return serial;
+      const bnDigits = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+      return serial.replace(/\d/g, (digit) => bnDigits[digit]);
+    },
     initFaqObserver() {
-      const options = {
-        root: null,
-        threshold: 0.15,
-      };
-
+      const options = { root: null, threshold: 0.15 };
       this.observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
@@ -180,20 +168,13 @@ export default {
           }
         });
       }, options);
-
-      if (this.$refs.faqList) {
-        this.observer.observe(this.$refs.faqList);
-      }
+      if (this.$refs.faqList) this.observer.observe(this.$refs.faqList);
     },
-
     animateFaqList() {
       this.$nextTick(() => {
         this.$gsap.fromTo(
           this.$refs.faqItems,
-          {
-            opacity: 0,
-            y: 50,
-          },
+          { opacity: 0, y: 50 },
           {
             opacity: 1,
             y: 0,
@@ -210,24 +191,18 @@ export default {
 
       this.$nextTick(() => {
         const items = this.$refs.faqItems;
-
-        // Animate opened item
         if (this.activeIndex !== null) {
           const el = items[this.activeIndex].querySelector(
             ".faq-answer-content"
           );
-
           this.$gsap.fromTo(
             el,
             { opacity: 0, y: 20 },
             { opacity: 1, y: 0, duration: 0.5, ease: "power2.out" }
           );
         }
-
-        // Animate closed item (optional polish)
         if (prevIndex !== null && prevIndex !== this.activeIndex) {
           const el = items[prevIndex].querySelector(".faq-answer-content");
-
           this.$gsap.to(el, {
             opacity: 0,
             y: 10,
@@ -237,24 +212,79 @@ export default {
         }
       });
     },
-    // Transition hooks for height-based smoothing
     startTransition(el) {
       el.style.height = el.scrollHeight + "px";
     },
     endTransition(el) {
       el.style.height = "";
     },
-    // Logic to assign "orbit" positions based on current index
-    getOrbitClass(i) {
-      const total = this.stackCards.length;
-      const position = (i - this.currentCardIndex + total) % total;
 
-      if (position === 0) return "pos-active"; // Left focus
-      if (position === 1) return "pos-top-right";
-      if (position === 2) return "pos-right";
-      return "pos-bottom-right";
+    /* --------------------------------
+       ORBIT POSITION (data-driven coverflow)
+    -------------------------------- */
+    getOrbitStyle(i) {
+      const total = this.stackCards.length;
+      const fwd = (i - this.currentCardIndex + total) % total; // 0 = focused
+
+      /* ---------- MOBILE: centred focus + blurred deck behind ---------- */
+      if (this.isMobile) {
+        if (fwd === 0) {
+          return {
+            left: "50%",
+            top: "58%",
+            transform: "translate(-50%, -50%) translateZ(0) scale(0.95)",
+            filter: "none",
+            opacity: 1,
+            zIndex: 60,
+          };
+        }
+        const sideCount = total - 1;
+        const t = sideCount > 1 ? (fwd - 1) / (sideCount - 1) : 0;
+        const top = 58 - (10 + 16 * t);
+        const scale = 0.78 - 0.16 * t;
+        const blur = 2 + 3 * t;
+        const brightness = 0.7 - 0.22 * t;
+        return {
+          left: "50%",
+          top: `${top}%`,
+          transform: `translate(-50%, -50%) translateZ(${-60 - 70 * t}px) scale(${scale})`,
+          filter: `blur(${blur}px) brightness(${brightness})`,
+          opacity: 1,
+          zIndex: 40 - fwd,
+        };
+      }
+
+      /* ---------- DESKTOP: focus left, blurred fan pushed to the right ---------- */
+      if (fwd === 0) {
+        return {
+          left: "28%",
+          top: "50%",
+          transform:
+            "translate(-50%, -50%) translateZ(0) scale(0.95) rotateY(8deg)",
+          filter: "none",
+          opacity: 1,
+          zIndex: 60,
+        };
+      }
+      const sideCount = total - 1;
+      const t = sideCount > 1 ? (fwd - 1) / (sideCount - 1) : 0;
+      const top = 8 + (88 - 8) * t;
+      const scale = 0.46 - 0.05 * t;
+      const blur = 2.5 + 3 * t;
+      const brightness = 0.62 - 0.2 * t;
+      return {
+        left: "80%",
+        top: `${top}%`,
+        transform: `translate(-50%, -50%) translateZ(${-180 - 90 * t}px) scale(${scale})`,
+        filter: `blur(${blur}px) brightness(${brightness})`,
+        opacity: 1,
+        zIndex: 40 - fwd,
+      };
     },
 
+    /* --------------------------------
+       DRAG (vertical) + AUTOPLAY
+    -------------------------------- */
     handlePointerDown(e) {
       this.touchStartY = e.clientY;
       e.currentTarget.style.cursor = "grabbing";
@@ -280,10 +310,18 @@ export default {
       this.resetAutoplay();
     },
     startAutoplay() {
+      if (this.prefersReducedMotion) return;
+      clearInterval(this.autoplayInterval);
       this.autoplayInterval = setInterval(() => this.nextCard(), 5000);
     },
-    resetAutoplay() {
+    pauseAutoplay() {
       clearInterval(this.autoplayInterval);
+      this.autoplayInterval = null;
+    },
+    resumeAutoplay() {
+      this.startAutoplay();
+    },
+    resetAutoplay() {
       this.startAutoplay();
     },
   },
@@ -291,7 +329,6 @@ export default {
 </script>
 
 <style scoped>
-/* (Styles remain the same as previous version, but ensure stack-wrapper is accessible) */
 .faq-section {
   min-height: 100vh;
   background: #000;
@@ -299,6 +336,12 @@ export default {
   color: #fff;
   display: flex;
   align-items: center;
+}
+
+.container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
 }
 
 .header-wrap {
@@ -321,17 +364,18 @@ export default {
   grid-template-columns: 1.2fr 0.8fr;
   gap: 5vw;
   width: 100%;
+  align-items: center;
 }
 
 .faq-header {
   display: flex;
-  align-items: center; /* Vertical center */
+  align-items: center;
   gap: 20px;
   width: 100%;
 }
 
 .sl-box {
-  flex-shrink: 0; /* Prevents box from squishing */
+  flex-shrink: 0;
   border: 1px solid #fff;
   padding: 6px 12px;
   font-size: 0.8rem;
@@ -346,26 +390,23 @@ export default {
   line-height: 1.2;
 }
 
-/* 2. Smooth Transition Styles */
 .faq-answer-container {
   overflow: hidden;
   transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s ease;
 }
 
 .faq-answer-content {
-  padding: 1.5rem 0 0.5rem 65px; /* Aligns text under the question, not the SL box */
+  padding: 1.5rem 0 0.5rem 65px;
   color: #eeeeee;
   line-height: 1.6;
 }
 
-/* Transition Classes */
 .faq-expand-enter,
 .faq-expand-leave-to {
   height: 0 !important;
   opacity: 0;
 }
 
-/* General Layout */
 .faq-item {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1);
   padding: 1.8rem 0;
@@ -378,10 +419,10 @@ export default {
   color: #ed017f;
 }
 
-/* Orbit Stage Styles */
+/* Orbit Stage */
 .stack-panel {
   position: relative;
-  height: 500px;
+  height: 460px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -398,42 +439,32 @@ export default {
 
 .orbit-card {
   position: absolute;
-  transition: all 1s cubic-bezier(0.34, 1.56, 0.64, 1);
-  transform-style: preserve-3d;
+  left: 50%;
+  top: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.orbit-card:not(.portrait-card).pos-active {
-  top: 20%;
-}
-
-.orbit-card:not(.pos-active).portrait-card.pos-top-right {
-  left: 72%;
-  top: -50%;
-}
-.orbit-card:not(.pos-active).portrait-card.pos-right {
-  left: 77%;
-  top: 0%;
-}
-.orbit-card:not(.pos-active).portrait-card.pos-bottom-right {
-  left: 72%;
-  top: 50%;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+  will-change: transform, filter;
+  /* Springy overshoot = gentle "gravity" settle */
+  transition: top 0.9s cubic-bezier(0.34, 1.5, 0.55, 1),
+    left 0.9s cubic-bezier(0.34, 1.5, 0.55, 1),
+    transform 0.9s cubic-bezier(0.34, 1.5, 0.55, 1), filter 0.6s ease,
+    opacity 0.5s ease;
 }
 
 .card-inner {
-  width: 320px;
+  width: clamp(160px, 20vw, 300px);
   aspect-ratio: 504 / 316;
   border-radius: 12px;
   box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6);
   transition: inherit;
 }
 
-/* Corrects the vertical card's shape automatically */
 .card-inner.is-portrait {
   aspect-ratio: 316 / 504;
-  width: 220px; /* Scaled to look proportional */
+  width: clamp(120px, 14vw, 210px);
 }
 
 .card-inner img {
@@ -443,108 +474,68 @@ export default {
   border-radius: inherit;
 }
 
-/* POSITION STATES (Orbiting Logic) */
-
-/* 1. The Focused Card (Large, Left) */
-.pos-active {
-  left: 0;
-  z-index: 10;
-  transform: scale(1) rotateY(10deg);
-  filter: blur(0) brightness(1);
-}
-
-/* 2. Orbiting Cards (Right side stack) */
-.pos-top-right,
-.pos-right,
-.pos-bottom-right {
-  left: 60%;
-  filter: blur(3px) brightness(0.5);
-  z-index: 5;
-}
-
-.pos-top-right {
-  top: -35%;
-  transform: scale(0.45) translateZ(-200px);
-}
-
-.pos-right {
-  left: 65%;
-  top: 17.5%;
-  transform: scale(0.45) translateZ(-300px) translateX(40px);
-}
-
-.pos-bottom-right {
-  top: 70%;
-  transform: scale(0.45) translateZ(-200px);
-}
-
-/* Reflections and Glows */
-.pos-active .card-inner {
+.orbit-card.is-active .card-inner {
+  box-shadow: 0 26px 60px rgba(0, 0, 0, 0.7), 0 0 60px rgba(237, 1, 127, 0.25);
   -webkit-box-reflect: below 10px
-    linear-gradient(transparent, transparent 70%, rgba(255, 255, 255, 0.1));
+    linear-gradient(transparent, transparent 70%, rgba(255, 255, 255, 0.12));
 }
 
-.glow-element {
-  position: absolute;
-  width: 300px;
-  height: 300px;
-  background: radial-gradient(
-    circle,
-    rgba(0, 132, 255, 0.15) 0%,
-    transparent 70%
-  );
-  top: 50%;
-  left: 20%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
+@media (prefers-reduced-motion: reduce) {
+  .orbit-card {
+    transition-duration: 0.001ms !important;
+  }
 }
 
-.nav-btn {
-  background: none;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  color: #fff;
-  padding: 10px 15px;
-  cursor: pointer;
-  border-radius: 50%;
-  z-index: 10;
-}
-
-.expand-enter-active,
-.expand-leave-active {
-  transition: all 0.4s ease;
-  max-height: 200px;
-  overflow: hidden;
-}
-.expand-enter,
-.expand-leave-to {
-  max-height: 0;
-  opacity: 0;
-}
-
-@media (max-width: 768px) {
+/* ---------- TABLET ---------- */
+@media (max-width: 991px) {
   .content-wrapper {
-    flex-direction: column;
-    gap: 50px;
     grid-template-columns: 1fr;
+    gap: 40px;
   }
-
-  .faq-list {
-    width: 100%;
-  }
-
   .stack-panel {
-    width: 65%;
-    align-items: center;
-    transform: scale(0.8);
+    order: -1;
+    height: 380px;
   }
+}
 
-  .stack-wrapper {
-    width: 250px; /* Scale down the mini-card stack */
-    height: 160px;
+/* ---------- MOBILE ---------- */
+@media (max-width: 768px) {
+  .faq-section {
+    padding: 70px 5vw;
   }
-
+  .header-wrap {
+    margin-bottom: 36px;
+  }
+  .content-wrapper {
+    gap: 30px;
+  }
+  .stack-panel {
+    width: 100%;
+    height: 320px;
+  }
+  .orbit-container {
+    height: 300px;
+  }
+  .faq-answer-content {
+    padding-left: 0;
+  }
   .question {
     font-size: 1rem;
+  }
+  .card-inner {
+    width: clamp(190px, 64vw, 280px);
+  }
+  .card-inner.is-portrait {
+    width: clamp(150px, 46vw, 210px);
+  }
+}
+
+@media (max-width: 420px) {
+  .stack-panel {
+    height: 290px;
+  }
+  .card-inner {
+    width: clamp(170px, 70vw, 250px);
   }
 }
 </style>

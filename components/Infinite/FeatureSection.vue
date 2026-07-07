@@ -1,7 +1,7 @@
 <template>
   <section :id="id" class="snap-section feature">
     <div class="header-wrap" v-if="title">
-      <h2 class="title-gradient">{{ title }}</h2>
+      <h2 class="title-gradient">{{ isEn ? title : title_bangla }}</h2>
     </div>
 
     <div
@@ -25,11 +25,46 @@
       </div>
 
       <div class="content" :class="align">
-        <h3>{{ featuresTitle }}</h3>
+        <h3>{{ isEn ? featuresTitle.en : featuresTitle.bn }}</h3>
 
-        <ul class="feature-list">
+        <ul class="feature-list" v-if="isEn">
           <li
-            v-for="(feature, index) in features"
+            v-for="(feature, index) in features.en"
+            :key="index"
+            class="feature-item-wrapper"
+          >
+            <!-- Normal item -->
+            <template v-if="typeof feature === 'string'">
+              <div class="feature-item">
+                <span class="bullet"></span>
+                {{ feature }}
+              </div>
+            </template>
+
+            <!-- Nested item group -->
+            <template v-else>
+              <div class="feature-item">
+                <span class="bullet"></span>
+                {{ feature.title }}
+              </div>
+
+              <ul class="nested-feature-list">
+                <li
+                  v-for="(item, idx) in feature.items"
+                  :key="idx"
+                  class="feature-item nested"
+                >
+                  <span class="bullet-2"></span>
+                  {{ item }}
+                </li>
+              </ul>
+            </template>
+          </li>
+        </ul>
+
+        <ul class="feature-list" v-else>
+          <li
+            v-for="(feature, index) in features.bn"
             :key="index"
             class="feature-item-wrapper"
           >
@@ -76,8 +111,9 @@ export default {
     },
     img: String,
     title: String,
-    features: Array,
-    featuresTitle: String,
+    title_bangla: String,
+    features: Object,
+    featuresTitle: Object,
   },
 
   data() {
@@ -86,6 +122,12 @@ export default {
       observer: null,
       navbarOffset: 70,
     };
+  },
+
+  computed: {
+    isEn() {
+      return this.$i18n.locale === "en";
+    },
   },
 
   mounted() {

@@ -4,13 +4,11 @@
       <div v-if="$i18n.locale == 'en'" class="report-heading">
         <h1 class="report-heading-title">IPDC GREEN BANKING REPORT</h1>
         <!-- <p class="report-heading-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend.
         </p> -->
       </div>
       <div v-if="$i18n.locale == 'bn'" class="report-heading">
         <h1 class="report-heading-title">আইপিডিসি গ্রিন ব্যাংকিং রিপোর্ট</h1>
         <!-- <p class="report-heading-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend.
         </p> -->
       </div>
       <div v-if="downloadAbleFile.length > 0" class="yearly-report">

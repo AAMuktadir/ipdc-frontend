@@ -377,8 +377,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:color";
-
 .table-hover tbody tr:hover {
   color: #212529;
   background-color: rgba(237, 1, 127, 0.2);
@@ -522,7 +520,7 @@ $cyan: #57caf4;
 $red: #ed017f;
 $white: #fefefe;
 $gray: #444;
-$lightGray: color.adjust($gray, $lightness: 30%);
+$lightGray: lighten($gray, 30);
 
 /*
 *
@@ -570,13 +568,13 @@ START // CHART'S RULES
 
   @mixin drawSkin($color) {
     &.floor {
-      background-color: color.adjust(rgba($color, 0.2), $lightness: -10%);
+      background-color: darken(rgba($color, 0.2), 10);
     }
     & > .growing-bar {
       background-color: #ed017f;
       &:before {
-        color: color.adjust($color, $lightness: -30%);
-        border-top-color: color.adjust($color, $lightness: -10%);
+        color: darken($color, 30);
+        border-top-color: darken($color, 10);
       }
     }
   }
@@ -642,7 +640,7 @@ START // CHART'S RULES
     .side-0 {
       transform: rotateY(90deg) translateZ(1em);
 
-      background-color: color.adjust($faceColor, $lightness: -5%);
+      background-color: darken($faceColor, 05);
 
       .percentage-on-bar {
         transform: rotate(-90deg);
@@ -666,7 +664,7 @@ START // CHART'S RULES
     .side-1 {
       transform: rotateY(360deg) translateY(-10em) translateZ(1em);
 
-      background-color: color.adjust($faceColor, $lightness: -15%);
+      background-color: darken($faceColor, 15);
 
       .percentage-on-bar {
         transform: rotate(-90deg);
@@ -684,7 +682,7 @@ START // CHART'S RULES
       }
 
       .growing-bar {
-        background-color: color.adjust($growColor, $lightness: -15%);
+        background-color: darken($growColor, 15);
       }
     }
     .top {

@@ -2,16 +2,13 @@
   <div class="conditions" v-if="conditionsHeading && loanConditions.length > 0">
     <div class="container">
       <div class="conditions-heading">
-        <h1 class="conditions-title">
+        <h2 class="conditions-title">
           {{
             $i18n.locale == "en"
               ? conditionsHeading.title
               : conditionsHeading.title_bangla
           }}
-        </h1>
-        <!--        <p class="conditions-condition">-->
-        <!--          You can apply for IPDC Auto Loan if you are:-->
-        <!--        </p> -->
+        </h2>
         <ul v-if="loanConditions.length > 0" class="condition-conditions">
           <li
             v-for="item in loanConditions"

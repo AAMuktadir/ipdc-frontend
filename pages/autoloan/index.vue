@@ -5,8 +5,6 @@
       :loanWhatWeOfferCards="autoLoanWhatWeOfferCards"
       :offerHeading="offerHeading"
     />
-    <!--    <OffersWeHave />-->
-    <Purpose :purpose="autoLoanPurpose" :purposeHeading="purposeHeading" />
     <Eligibility
       :loanEligibilities="autoLoanEligibilities"
       :eligibleHeading="eligibleHeading"
@@ -15,9 +13,6 @@
       :loanTermAmount="autoLoanTermAmount"
       :termAmountHeading="termAmountHeading"
     />
-    <div v-if="calculatorSettings.status === 'Active'">
-      <DriveyourDream />
-    </div>
     <RequiredDocuments
       :loanRequiredDocuments="autoLoanRequiredDocuments"
       :documentsRequiredHeading="documentsRequiredHeading"
@@ -26,7 +21,6 @@
       :loanConditions="loanConditions"
       :conditionsHeading="conditionsHeading"
     />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
@@ -41,12 +35,26 @@
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "auto_loan_page");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
@@ -79,7 +87,8 @@ export default {
 
       loanApplyNowText: {
         id: 52,
-        title: "Apply Now",
+        title:
+          "Make Car Ownership Simple With A Fast And Flexible Auto Loan Process",
         title_bangla: "আবেদন করুন এখনই ",
         sub_title: "",
         sub_title_bangla: "",

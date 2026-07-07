@@ -91,14 +91,14 @@
               </div>
             </nuxt-link>
           </li>
-          <li @click="$emit('close')">
+          <!-- <li @click="$emit('close')">
             <nuxt-link :to="localePath('/priti')">
               {{ $i18n.locale == "en" ? "Priti" : "প্রীতি" }}
               <div class="loan-circle">
                 <img src="~assets/image/right.png" alt="Right" />
               </div>
             </nuxt-link>
-          </li>
+          </li> -->
         </ul>
       </div>
     </section>

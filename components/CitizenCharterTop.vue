@@ -1,18 +1,6 @@
 <template>
   <section class="report">
     <div class="container">
-      <!-- <div v-if="$i18n.locale == 'en'" class="report-heading"> -->
-      <!-- <h1 class="report-heading-title">IPDC CITIZEN'S CHARTER</h1> -->
-      <!-- <p class="report-heading-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend.
-        </p> -->
-      <!-- </div> -->
-      <!-- <div v-if="$i18n.locale == 'bn'" class="report-heading"> -->
-      <!-- <h1 class="report-heading-title">আইপিডিসি সিটিজেন'স চার্টার</h1> -->
-      <!-- <p class="report-heading-description">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Diam, dapibus mattis vel feugiat erat tortor eleifend.
-        </p> -->
-      <!-- </div> -->
       <div class="contact-information-card">
         <b-row v-if="downloadAbleFile.length > 0">
           <b-col md="6">

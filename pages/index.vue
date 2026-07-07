@@ -1,36 +1,18 @@
 /* eslint-disable vue/no-unused-components */
 <template>
   <div class="homepage">
-    <!-- <Slider :page="page" /> -->
     <CoverImageWithoutButtonBelow :cover="cover" />
-
     <Loans />
-
     <MessageScroller />
-
     <Whyipdc
       :why-choose-cards="whyChooseCards"
       :home_why_choose_heading="home_why_choose_heading"
     />
-
-    <!-- <FindPriorites /> -->
-
-    <!-- <Shareholders :shareholders="shareholders" /> -->
-
     <IpdcGlance :home-ata-glance="homeAtaGlance" />
-
-    <OngoingCampaigns
-      :page="page"
-      :home_campaign_heading="home_campaign_heading"
-    />
-
     <CustomerExperience
       :home-customer-experience="homeCustomerExperience"
       :home_customer_experience_heading="home_customer_experience_heading"
     />
-
-    <!-- <ReadBlog :home-blog="homeBlog" /> -->
-
     <BalanceSheet
       :balance-sheet="balanceSheet"
       :home_strongest_balance_sheet_heading="
@@ -48,72 +30,51 @@
     </div>
   </div>
 </template>
-
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
   async asyncData({ $axios }) {
     try {
-      const [homeRes, blogRes, balanceRes, coverRes] = await Promise.all([
-        $axios.get(`/get-home-page-data/home_page`),
-        $axios.get(`/get-blog`),
-        $axios.get(`/get-balance-sheet`),
-        $axios.get(`/get-cover-image/home_page`),
-      ]);
-
-      const responseData = homeRes.data.data;
-
-      // console.log(coverRes.data.data);
-
+      const seo = await getSeoData($axios, "home_page");
       return {
-        page: "home_page",
-        whyChooseCards: responseData.home_why_choose || [],
-        shareholders: responseData.shareholders || [],
-        homeAtaGlance: responseData.home_at_a_glance?.[0] || {},
-        homeCustomerExperience: responseData.home_customer_experience || [],
-        home_why_choose_heading:
-          responseData.home_why_choose_heading?.[0] || {},
-        home_campaign_heading: responseData.home_campaign_heading?.[0] || {},
-        home_customer_experience_heading:
-          responseData.home_customer_experience_heading?.[0] || {},
-        home_strongest_balance_sheet_heading:
-          responseData.home_strongest_balance_sheet_heading?.[0] || {},
-        homeBlog: blogRes.data.data || [],
-        balanceSheet: balanceRes.data.data || [],
-        cover: coverRes.data.data || null,
+        seo,
       };
     } catch (error) {
-      console.error("SSR fetch failed:", error);
+      console.error("SEO fetch failed:", error);
 
       return {
-        page: "home_page",
-        whyChooseCards: [],
-        shareholders: [],
-        homeAtaGlance: {},
-        homeCustomerExperience: [],
-        home_why_choose_heading: {},
-        home_campaign_heading: {},
-        home_customer_experience_heading: {},
-        home_strongest_balance_sheet_heading: {},
-        homeBlog: [],
-        balanceSheet: [],
-        cover: null,
+        seo: {},
       };
     }
   },
+
   head() {
-    return {
-      title: "IPDC Finance PLC | Bangladesh's #1 Private NBFI Since 1981",
-      meta: [
-        {
-          hid: "description",
-          name: "description",
-          content: "From home loans to SME finance, IPDC Finance PLC is Bangladesh's first private NBFI, trusted by individuals, entrepreneurs & corporates for 40+ years.",
-        },
-      ],
-    };
+    return generateSeoHead(this.seo);
   },
   mounted() {
     this.showModal();
+  },
+
+  data() {
+    return {
+      page: "home_page",
+      seo: {},
+      whyChooseCards: [],
+      shareholders: [],
+      homeAtaGlance: {},
+      homeCustomerExperience: [],
+      home_why_choose_heading: {},
+      home_campaign_heading: {},
+      home_customer_experience_heading: {},
+      home_strongest_balance_sheet_heading: {},
+      homeBlog: [],
+      balanceSheet: [],
+      cover: null,
+    };
+  },
+  created() {
+    this.getHomePageData();
   },
 
   methods: {
@@ -123,16 +84,55 @@ export default {
       const img = new Image();
 
       img.onload = () => {
+        // Image exists and loaded successfully
         this.$bvModal.show("modalAnnounce");
       };
 
-      img.onerror = () => {};
+      img.onerror = () => {
+        // Image does NOT exist
+        return;
+      };
 
       img.src = imageUrl;
     },
 
     closeModal() {
       this.$bvModal.hide("modalAnnounce");
+    },
+
+    async getHomePageData() {
+      try {
+        const [homeRes, blogRes, balanceRes, coverRes, balancesheetBack] =
+          await Promise.all([
+            this.$axios.get(`/get-home-page-data/home_page`),
+            this.$axios.get(`/get-blog`),
+            this.$axios.get(`/get-balance-sheet`),
+            this.$axios.get(`/get-cover-image/home_page`),
+            this.$axios.get(`/get-background-image/3/Bottom`),
+          ]);
+
+        const responseData = homeRes.data.data;
+
+        this.page = "home_page";
+        this.whyChooseCards = responseData.home_why_choose || [];
+        this.shareholders = responseData.shareholders || [];
+        this.homeAtaGlance = responseData.home_at_a_glance?.[0] || {};
+        this.homeCustomerExperience =
+          responseData.home_customer_experience || [];
+        this.home_why_choose_heading =
+          responseData.home_why_choose_heading?.[0] || {};
+        this.home_campaign_heading =
+          responseData.home_campaign_heading?.[0] || {};
+        this.home_customer_experience_heading =
+          responseData.home_customer_experience_heading?.[0] || {};
+        this.home_strongest_balance_sheet_heading =
+          responseData.home_strongest_balance_sheet_heading?.[0] || {};
+        this.homeBlog = blogRes.data.data || [];
+        this.balanceSheet = balanceRes.data.data || [];
+        this.cover = coverRes.data.data || null;
+      } catch (error) {
+        console.error("Data fetch failed:", error);
+      }
     },
   },
 };

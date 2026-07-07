@@ -2,7 +2,9 @@
   <section id="terms-section" class="terms-section">
     <div class="container">
       <div class="header-wrap" ref="header">
-        <h2 class="title-gradient">Terms & Conditions</h2>
+        <h2 class="title-gradient">
+          {{ $i18n.locale == "en" ? "Terms & Conditions" : "শর্তাবলি" }}
+        </h2>
       </div>
 
       <div class="documents-details terms-grid">
@@ -15,7 +17,10 @@
           <!-- <div class="documents-icon">
             <component :is="item.icon" class="term-icon" />
           </div> -->
-          <p class="term-desc"><span class="bullet"></span>{{ item.desc }}</p>
+          <p class="term-desc">
+            <span class="bullet"></span
+            >{{ $i18n.locale == "en" ? item.desc : item.desc_bangla }}
+          </p>
         </div>
       </div>
     </div>
@@ -29,43 +34,78 @@ export default {
       terms: [
         {
           desc: "The IPDC Ucchash Card is issued exclusively to IPDC Finance PLC customers based on the institution’s internal eligibility and segmentation criteria.",
+          desc_bangla:
+            "আইপিডিসি উচ্ছ্বাস কার্ডটি সম্পূর্ণ এক্সক্লুসিভভাবে শুধু আইপিডিসি ফাইন্যান্স পিএলসি’র গ্রাহকদের জন্যই ইস্যু করা হয়, যা প্রতিষ্ঠানের নিজস্ব যোগ্যতা ও সেগমেন্টের নিয়মের ওপর ভিত্তি করে নির্ধারিত হয়।",
           icon: "IconCircle",
         },
         {
           desc: "Customers must maintain an active relationship with IPDC, including deposit or financing products, to be eligible for the card.",
+          desc_bangla:
+            "এই কার্ডের জন্য যোগ্য হতে হলে কাস্টমারকে অবশ্যই আইপিডিসি’র সাথে একটি অ্যাকটিভ সম্পর্ক বজায় রাখতে হবে, যার মধ্যে ডিপোজিট বা ফাইন্যান্সিং প্রডাক্ট অন্তর্ভুক্ত।",
           icon: "IconSlash",
         },
         {
           desc: "The card will be issued according to the customer segment or portfolio classification determined by IPDC.",
+          desc_bangla:
+            "আইপিডিসি’র নির্ধারিত কাস্টমার সেগমেন্ট বা পোর্টফোলিও ক্লাসিফিকেশন অনুযায়ী গ্রাহকদের এই কার্ডটি দেওয়া হবে।",
           icon: "IconPlus",
         },
         {
           desc: "The card does not function as a debit, credit, prepaid, or payment card and cannot be used for financial transactions.",
+          desc_bangla:
+            "এই কার্ডটি কোনো ডেবিট, ক্রেডিট, প্রিপেইড বা পেমেন্ট কার্ড হিসেবে কাজ করে না; তাই এটি দিয়ে কোনো ধরনের আর্থিক লেনদেন করা যাবে না।",
           icon: "IconWallet",
         },
         {
           desc: "Cardholders can avail partner discounts and value-added services subject to the terms and conditions of the respective partner establishments.",
+          desc_bangla:
+            "কার্ডহোল্ডাররা আমাদের পার্টনারদের কাছ থেকে ডিসকাউন্ট এবং অন্যান্য বাড়তি সুবিধা পাবেন, যা সংশ্লিষ্ট পার্টনার ব্র্যান্ডের নিজস্ব শর্তাবলির ওপর নির্ভর করবে।",
           icon: "IconCross",
         },
         {
           desc: "IPDC reserves the right to approve, decline, upgrade, downgrade, or withdraw the card at its discretion.",
+          desc_bangla:
+            "কার্ডটি অনুমোদন, বাতিল, আপগ্রেড, ডাউনগ্রেড বা প্রত্যাহার করার সম্পূর্ণ অধিকার আইপিডিসি তার নিজস্ব সিদ্ধান্ত অনুযায়ী সংরক্ষণ করে।",
           icon: "IconMinus",
         },
         {
           desc: "The benefits, partner offers, and privileges associated with the card may change or be withdrawn without prior notice.",
+          desc_bangla:
+            "এই কার্ডের সাথে যুক্ত সকল সুযোগ-সুবিধা, পার্টনার অফার এবং প্রিভিলেজ যে-কোনো সময় কোনো পূর্ব ঘোষণা ছাড়াই পরিবর্তন বা প্রত্যাহার করা হতে পারে।",
           icon: "IconDots",
         },
         {
           desc: "In case of misuse or closure of the customer relationship with IPDC, the card may be deactivated.",
+          desc_bangla:
+            "কার্ডের কোনো ধরনের অপব্যবহার হলে কিংবা আইপিডিসি’র সাথে কাস্টমার রিলেশনশিপ বন্ধ হয়ে গেলে, কার্ডটি নিষ্ক্রিয় বা ডিঅ্যাক্টিভেট করে দেওয়া হতে পারে।",
           icon: "IconDoc",
         },
       ],
     };
   },
-  mounted() {
-    this.initAnimations();
+  async mounted() {
+    await this.getCardTerms();
+    // Run animations after the (possibly API-driven) list is in the DOM so the
+    // stagger targets the real term cards.
+    this.$nextTick(() => {
+      this.initAnimations();
+    });
   },
   methods: {
+    async getCardTerms() {
+      try {
+        const response = await this.$axios.get(`/get-card-terms`);
+        const data = response && response.data ? response.data.terms : null;
+        // Only replace the in-component defaults when the API returns usable data,
+        // so the page still renders if the request fails or returns nothing.
+        if (Array.isArray(data) && data.length) {
+          this.terms = data;
+        }
+      } catch (error) {
+        console.log("Error fetching getCardTerms:", error);
+        // keep fallback defaults
+      }
+    },
     initAnimations() {
       const gsap = this.$gsap;
       const { termCards, header } = this.$refs;

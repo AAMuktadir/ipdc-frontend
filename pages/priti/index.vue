@@ -16,38 +16,40 @@
       :partnersHeading="partnersHeading"
       :partnersData="partnersData"
     />
-
-    <!--    <Eligibility :eligibleHeading="eligibleHeading" :loanEligibilities="loanEligibilities" />-->
-    <!--    <Employed :employed="loanForEmployed" />-->
-    <!--    <SelfEmployed :selfEmployed="loanForSelfEmployed" />-->
-    <!--    <TermAmount :loanTermAmount="loanTermAmount" :termAmountHeading="termAmountHeading"/>-->
-    <!--    <HomeLoanDrivedream />-->
-    <!--    <RequiredDocuments :loanRequiredDocuments="loanRequiredDocuments" :documentsRequiredHeading="documentsRequiredHeading"/>-->
     <Conditions
       :loanConditions="loanConditions"
       :conditionsHeading="conditionsHeading"
     />
-    <!-- <LoansVideo :page="page" /> -->
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button1"
     />
     <Faqs :page="page" />
     <OngoingCampaigns :page="page" />
-    <!-- <DownloadApplicationform
-      :footerApplicationForm="loanFooterApplicationForm"
-      :page="page"
-    /> -->
   </div>
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "priti");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {

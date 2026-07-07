@@ -390,8 +390,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:color";
-
 .strongest-balance-title {
   display: flex;
   align-items: center;
@@ -422,7 +420,7 @@ $cyan: #57caf4;
 $red: #ed017f;
 $white: #fefefe;
 $gray: #444;
-$lightGray: color.adjust($gray, $lightness: 30%);
+$lightGray: lighten($gray, 30);
 
 $loan_prev: #0a73b5;
 $loan_curr: #29bae9;
@@ -539,22 +537,22 @@ START // CHART'S RULES
 
   @mixin drawSkin($color) {
     &.side-0 {
-      background-color: color.adjust($color, $lightness: -15%);
+      background-color: darken($color, 15);
     }
     &.side-1 {
-      background-color: color.adjust($color, $lightness: -5%);
+      background-color: darken($color, 05);
     }
     &.top {
       background-color: $color;
     }
     &.floor {
-      background-color: color.adjust(rgba($color, 0.2), $lightness: -10%);
+      background-color: darken(rgba($color, 0.2), 10);
     }
     & > .growing-bar {
-      background-color: color.adjust($color, $lightness: -5%);
+      background-color: darken($color, 05);
       &:before {
-        color: color.adjust($color, $lightness: -30%);
-        border-top-color: color.adjust($color, $lightness: -10%);
+        color: darken($color, 30);
+        border-top-color: darken($color, 10);
       }
     }
   }
@@ -631,7 +629,7 @@ START // CHART'S RULES
       transform: rotateY(90deg) translateX(0.26em) translateZ(0.74em)
         scaleX(1.34);
 
-      background-color: color.adjust($faceColor, $lightness: -5%);
+      background-color: darken($faceColor, 05);
 
       .percentage-on-bar {
         transform: rotate(-90deg);
@@ -656,7 +654,7 @@ START // CHART'S RULES
     .side-1 {
       transform: rotateY(360deg) translateY(-10em) translateZ(0.74em);
 
-      background-color: color.adjust($faceColor, $lightness: -15%);
+      background-color: darken($faceColor, 15);
 
       .percentage-on-bar {
         transform: rotate(-90deg);
@@ -675,7 +673,7 @@ START // CHART'S RULES
       }
 
       .growing-bar {
-        background-color: color.adjust($growColor, $lightness: -15%);
+        background-color: darken($growColor, 15);
       }
     }
     .top {

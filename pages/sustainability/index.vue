@@ -51,22 +51,34 @@
 
     <SustainableFinanceCSR :coverImage="coverImage.csr" id="csr" />
 
-    <!-- <SustainabilitySectionCover :coverImage="coverImage.contact" id="contact" /> -->
     <SustainableFinanceContact id="contact" />
   </div>
 </template>
 
 <script>
+import { getSeoData, generateSeoHead } from "@/utils/seo";
+
 export default {
+  async asyncData({ $axios }) {
+    try {
+      const seo = await getSeoData($axios, "sustainability");
+      return {
+        seo,
+      };
+    } catch (error) {
+      console.error("SEO fetch failed:", error);
+
+      return {
+        seo: {},
+      };
+    }
+  },
+
   head() {
-    return {
-      title:
-        this.$i18n.locale == "en" ? this.cover.title : this.cover.title_bangla,
-    };
+    return generateSeoHead(this.seo);
   },
   data() {
     return {
-      pageData: {},
       annualReports: [],
       genderData: {},
       portfolioData: {},
@@ -79,7 +91,7 @@ export default {
       page: "sustainability",
       cover: {
         title: "Sustainability",
-        title_bangla: "জয়ী",
+        title_bangla: "Sustainability",
         description:
           "We believe our financial health is our wealth and take cautious steps in managing and communicating information to the public pertaining to the company's operations, managerial organization, and financial standing.",
       },
@@ -94,44 +106,28 @@ export default {
         image_mobile_url:
           "https://ipdc.com/api/uploads/sustainable/Green-Banking1.jpg",
         title: "Sustainability",
-        title_bangla: "জয়ী হবার লক্ষ্যে",
-        sub_title:
-          "IPDC Finance PLC. has brought short and long term loan facilities for women entrepreneurs.",
-        sub_title_bangla:
-          "নারী উদ্যোক্তাদের জন্য আইপিডিসি ফাইন্যান্স পিএলসি. নিয়ে এসেছে স্বল্প ও দীর্ঘ মেয়াদী ঋণের সুবিধা।",
-        products: {
-          // id: 1,
-          // image:
-          //   "https://ipdc.com/api/uploads/sustainable/main_banner_16_9.jpg",
-          // title: "Sustainable Finance Products",
-          // title_bn: "Sustainable Finance Products",
-          // description:
-          //   "IPDC strives to integrate sustainable practices into everything it does, not just eco-friendly activities. We're all about keeping our unbounded passion alive!",
-          // description_bn:
-          //   "IPDC strives to integrate sustainable practices into everything it does, not just eco-friendly activities. We're all about keeping our unbounded passion alive!",
-        },
+        title_bangla: "Sustainability",
+        products: {},
         disclosures: {
           id: 1,
           image_url: "https://ipdc.com/api/uploads/1677062941u9YR2.jpg",
           image_mobile_url: "https://ipdc.com/api/uploads/1677062941u9YR2.jpg",
           title: "Disclosures",
-          title_bangla: "জয়ী হবার লক্ষ্যে",
+          title_bangla: "Disclosures",
         },
         testimonal: {
           id: 1,
           image_url: "https://ipdc.com/api/uploads/1677127153Tzi1o.jpg",
           image_mobile_url: "https://ipdc.com/api/uploads/1677127153Tzi1o.jpg",
           title: "Customer Testimonials",
-          title_bangla: "জয়ী হবার লক্ষ্যে",
-          sub_title: "",
+          title_bangla: "Customer Testimonials",
         },
         awards: {
           id: 1,
           image_url: "https://ipdc.com/api/uploads/1677062313Hm1Tg.jpg",
           image_mobile_url: "https://ipdc.com/api/uploads/1677062313Hm1Tg.jpg",
           title: "Awards",
-          title_bangla: "জয়ী হবার লক্ষ্যে",
-          sub_title: "",
+          title_bangla: "Awards",
         },
         csr: {
           id: 1,
@@ -139,8 +135,10 @@ export default {
           image_mobile_url:
             "https://ipdc.com/api/uploads/sustainable/csr/Banner.png",
           title: "CSR Activities",
-          title_bangla: "জয়ী হবার লক্ষ্যে",
+          title_bangla: "CSR Activities",
           sub_title:
+            "Our unbound commitment is to uplift society, empower women and youth, nurture the environment, and elevate stakeholders, cultivating a legacy of sustainable and ethical growth.",
+          sub_title_bangla:
             "Our unbound commitment is to uplift society, empower women and youth, nurture the environment, and elevate stakeholders, cultivating a legacy of sustainable and ethical growth.",
         },
         contact: {
@@ -227,7 +225,6 @@ export default {
     async getPageData() {
       try {
         const response = await this.$axios.get("get-sustainability-page-data");
-        this.pageData = response.data.data;
         this.coverImage.products = response.data.data[0];
       } catch (error) {
         console.log("Error fetching getPageData:", error);
@@ -328,9 +325,7 @@ export default {
 
     async joyeeContent() {
       try {
-        const response = await this.$axios.get(
-          `https://ipdc.com/demo/api/get-joyee-data.php`
-        );
+        const response = await this.$axios.get('get-joyee-data');
         this.joyee_360 = response.data.data.joyee_360;
         this.joyee_360_images = response.data.data.joyee_360.joyee_360_images;
         this.joyee_creativity = response.data.data.joyee_section_creativity;

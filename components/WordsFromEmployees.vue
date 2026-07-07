@@ -81,7 +81,6 @@
               </div>
             </div>
             <p class="employees-description">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quisque amet habitant integer pretium hendrerit enim. Lobortis sed phasellus auctor
             </p>
           </div>
           <div class="employees-words">
@@ -94,7 +93,6 @@
               </div>
             </div>
             <p class="employees-description">
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut quisque amet habitant integer pretium hendrerit enim. Lobortis sed phasellus auctor
             </p>
           </div> -->
         </div>

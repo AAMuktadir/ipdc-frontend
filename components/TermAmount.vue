@@ -3,13 +3,13 @@
     <div class="container">
       <div class="term-amount">
         <div class="term-amount-title" v-if="termAmountHeading">
-          <h1>
+          <h2>
             {{
               $i18n.locale == "en"
                 ? termAmountHeading.title
                 : termAmountHeading.title_bangla
             }}
-          </h1>
+          </h2>
           <p v-if="$i18n.locale == 'en' && termAmountHeading.sub_title">
             {{ termAmountHeading.sub_title }}
           </p>
@@ -26,13 +26,13 @@
             data-aos-duration="600"
           >
             <img :src="singleTermAmount.image" alt="icon" />
-            <h5 class="terms-title">
+            <h3 class="terms-title">
               {{
                 $i18n.locale == "en"
                   ? singleTermAmount.title
                   : singleTermAmount.title_bangla
               }}
-            </h5>
+            </h3>
             <p class="terms-description">
               {{
                 $i18n.locale == "en"
@@ -70,7 +70,7 @@ export default {
     .term-amount-title {
       text-align: center;
       margin-bottom: 75px;
-      h1 {
+      h2 {
         font-weight: bold;
         font-size: 36px;
         line-height: 133%;
@@ -154,7 +154,7 @@ export default {
       .term-amount-title {
         text-align: center;
         margin-bottom: 50px;
-        h1 {
+        h2 {
           font-size: 25px;
         }
         p {

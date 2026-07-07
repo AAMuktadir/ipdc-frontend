@@ -12,7 +12,6 @@
       :loanEligibilities="personalLoanEligibility"
       :eligibleHeading="eligibleHeading"
     />
-    <PersonalComplacency />
     <TermAmount
       :loanTermAmount="personalLoanTermAmount"
       :termAmountHeading="termAmountHeading"

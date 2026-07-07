@@ -1,22 +1,10 @@
 # ipdc
 
-Nuxt 2 frontend for the IPDC website.
-
-## Runtime
-
-- Node.js: `24.15.0` LTS (`.nvmrc` and `.node-version`)
-- npm: `11.12.1`
-- Framework: Nuxt `2.x` / Vue `2.x`
-- Package manager: npm (`package-lock.json`)
-
 ## Build Setup
 
 ```bash
-# use the configured Node version
-$ nvm use
-
 # install dependencies
-$ npm ci
+$ npm install
 
 # serve with hot reload at localhost:3000
 $ npm run dev
@@ -29,11 +17,7 @@ $ npm run start
 $ npm run generate
 ```
 
-This project intentionally stays on Nuxt 2 and Vue 2 to preserve existing routes,
-plugins, component behavior, and API calls. Moving to Nuxt 3/Vue 3 would require
-a separate migration pass.
-
-For detailed explanation on how Nuxt 2 works, check out the [documentation](https://v2.nuxt.com).
+For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
 ## Special Directories
 

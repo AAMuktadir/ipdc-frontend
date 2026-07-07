@@ -2,13 +2,13 @@
   <section class="container">
     <div class="best-fits">
       <div class="best-fits-heading" v-if="bestFitHeading">
-        <h1 class="best-fits-heading-title">
+        <h2 class="best-fits-heading-title">
           {{
             $i18n.locale == "en"
               ? bestFitHeading.title
               : bestFitHeading.title_bangla
           }}
-        </h1>
+        </h2>
         <p class="best-fits-heading-description">
           {{
             $i18n.locale == "en"
@@ -44,20 +44,20 @@
                         : singlePackage.name_bangla
                     }}
                   </p>
-                  <h4>
+                  <h3>
                     {{
                       $i18n.locale == "en"
                         ? singlePackage.short_name
                         : singlePackage.short_name_bangla
                     }}
-                  </h4>
+                  </h3>
                 </div>
                 <div v-if="$i18n.locale == 'en'" class="minimum-deposit">
-                  <h1>৳ {{ singlePackage.minimum_deposit_amount }}</h1>
+                  <h4>৳ {{ singlePackage.minimum_deposit_amount }}</h4>
                   <p>Minimum Deposit</p>
                 </div>
                 <div v-if="$i18n.locale == 'bn'" class="minimum-deposit">
-                  <h1>৳ {{ singlePackage.minimum_deposit_amount_bangla }}</h1>
+                  <h4>৳ {{ singlePackage.minimum_deposit_amount_bangla }}</h4>
                   <p>ন্যূনতম জমা</p>
                 </div>
                 <div v-if="$i18n.locale == 'en'" class="minimum-tenure">
@@ -204,7 +204,7 @@ export default {
           }
         }
 
-        h4 {
+        h3 {
           font-weight: bold;
           font-size: 20px;
           line-height: 100%;
@@ -221,7 +221,7 @@ export default {
         text-align: center;
         border-bottom: 1.5px solid #f3f3f3;
 
-        h1 {
+        h4 {
           font-weight: bold;
           font-size: 30px;
           line-height: 133%;
@@ -330,62 +330,17 @@ export default {
 }
 @media screen and (max-width: 1024px) {
   .best-fits {
-    // &-heading {
-    //   &-title {
-    //   }
-
-    //   &-description {
-    //   }
-    // }
-
     .profit-schemes {
       .annual-profit {
         &-heading {
           min-height: 140px;
-
-          // p {
-          // }
-
-          // h4 {
-          // }
         }
-
-        // .minimum-deposit {
-        //   h1 {
-        //   }
-
-        //   p {
-        //   }
-        // }
 
         .minimum-tenure {
           &-details {
             min-height: 190px;
-
-            // p {
-            // }
-
-            // h5 {
-            // }
           }
         }
-
-        // .annual-profit-button {
-        //   a {
-        //     svg {
-        //     }
-        //     &:hover {
-        //     }
-        //   }
-        // }
-        // &:hover {
-        //   .annual-profit-button {
-        //     a {
-        //       svg {
-        //       }
-        //     }
-        //   }
-        // }
       }
     }
   }
@@ -409,14 +364,6 @@ export default {
 
     .profit-schemes {
       padding: 0 0 80px 0;
-
-      // .annual-profit {
-      //   &-heading {
-      //   }
-
-      //   .minimum-deposit {
-      //   }
-      // }
     }
   }
 }

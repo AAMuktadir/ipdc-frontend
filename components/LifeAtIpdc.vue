@@ -45,21 +45,6 @@
             }}
           </p>
         </div>
-        <!-- <div class="ipdc-rules dedication">
-          <img src="~/assets/image/icon/Clock.svg" alt="Clock">
-          <h3>Dedication</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <div class="ipdc-rules discipline">
-          <img src="~/assets/image/icon/Head.svg" alt="hands">
-          <h3>Discipline</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div>
-        <div class="ipdc-rules teamwork">
-          <img src="~/assets/image/icon/Handshake.svg" alt="hands">
-          <h3>Teamwork</h3>
-          <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
-        </div> -->
       </div>
     </div>
   </section>

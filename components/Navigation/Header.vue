@@ -4,12 +4,8 @@
     <div class="header-inner">
       <div class="header-logo">
         <nuxt-link class="logo_ipdc" :to="localePath('/')">
-          <img
-            v-if="frostedHeader"
-            src="~/assets/image/logo/headerlogo.png"
-            alt="location"
-          />
-          <img v-else src="~/assets/image/logo/Logo.png" alt="location" />
+          <img v-if="frostedHeader" src="/logo/Logo.png" alt="location" />
+          <img v-else src="/logo/Logo.png" alt="location" />
         </nuxt-link>
       </div>
       <!-- <button
@@ -31,15 +27,6 @@
               class="navbar-menu_link"
             >
               {{ $i18n.locale == "en" ? "Deposit" : "ডিপোজিট" }}
-            </nuxt-link>
-          </li>
-
-          <li class="navbar-menu_list">
-            <nuxt-link
-              :to="localePath('/test-page')"
-              class="navbar-menu_link"
-            >
-              {{ $i18n.locale == "en" ? "Test Page" : "টেস্ট পেজ" }}
             </nuxt-link>
           </li>
 
@@ -197,14 +184,14 @@
                   {{ $i18n.locale == "en" ? "Joyee" : "জয়ী" }}
                 </nuxt-link>
               </li>
-              <li class="dropdown-menus-list">
+              <!-- <li class="dropdown-menus-list">
                 <nuxt-link
                   class="dropdown-menus-link"
                   :to="localePath('/priti')"
                 >
                   {{ $i18n.locale == "en" ? "Priti" : "প্রীতি" }}
                 </nuxt-link>
-              </li>
+              </li> -->
             </ul>
           </li>
 
@@ -456,7 +443,7 @@
         </form>
       </div>
 
-      <!-- Hotline number -->
+      <!-- Hotline number
       <a href="tel:16519">
         <div class="service_button">
           <button class="iService" style="line-height: 1; padding: 0">
@@ -478,6 +465,21 @@
                 </span>
               </span>
             </span>
+          </button>
+        </div>
+      </a> -->
+
+      <!-- ez app -->
+      <a href="/ez-app/" aria-label="EZ app">
+        <div class="service_button">
+          <button class="iService ez-service">
+            <img
+              :src="require('~/assets/image/icon/ez-logo.png')"
+              alt="EZ app"
+              class="ez-logo"
+              width="98"
+              height="41"
+            />
           </button>
         </div>
       </a>
@@ -621,8 +623,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@use "sass:color";
-
 .dropdown-menus-fixed {
   cursor: pointer;
   position: relative;
@@ -638,7 +638,7 @@ export default {
   }
 
   &:hover {
-    background-color: color.adjust(#ed017f, $lightness: -10%);
+    background-color: darken(#ed017f, 10%);
   }
 }
 
@@ -681,17 +681,18 @@ header {
     //   #d65f5f 87.08%
     // );
     //backdrop-filter: blur(100px);
-    background: rgba(255, 255, 255, 0.1);
-    backdrop-filter: blur(100px);
+    // background: rgba(255, 255, 255, 0.1);
+    background: #000;
+    // backdrop-filter: blur(100px);
 
     .header-inner {
       .navbar {
         .navbar-menu {
           &_link {
-            color: #343434;
-            img {
-              filter: brightness(0) invert(0.2);
-            }
+            color: #ffffff;
+            // img {
+              // filter: brightness(0) invert(0.2);
+            // }
             &:hover {
               color: #ed017f;
             }
@@ -841,7 +842,7 @@ header {
           }
 
           &:hover {
-            color: #000000;
+            color: #ed017f;
 
             transition: 0.15s all ease-in-out;
             text-shadow: 0px 0px 10px #ed017f;
@@ -1001,6 +1002,44 @@ header {
           background: #ff0088;
           transition: 0.45s all ease-in-out;
           box-shadow: -1px 1px 10px rgba(0, 0, 0, 0.9);
+        }
+
+        // EZ-app: render as just the transparent PNG (no button chrome), flip + shadow on hover
+        &.ez-service {
+          width: auto; // hug the logo instead of base .iService 113px box (higher specificity wins)
+          min-height: 0;
+          height: 41px; // fixed height keeps the row aligned and avoids hydration shift
+          padding: 0;
+          background: transparent !important; // force over any global button/.iService/theme rule
+          border: none;
+          border-radius: 0;
+          box-shadow: none;
+          overflow: visible; // don't clip the flip or the drop-shadow
+          display: inline-flex;
+          align-items: center;
+          justify-content: center;
+          perspective: 600px; // gives the flip real 3D depth
+          cursor: pointer;
+
+          .ez-logo {
+            width: auto;
+            height: 41px; // 2.4:1 logo -> ~98px wide, reserved by the img width/height attrs
+            display: block;
+            object-fit: contain;
+            transform-origin: center;
+            transition: transform 0.55s ease, filter 0.55s ease;
+          }
+
+          &:hover {
+            background: transparent !important; // stay chrome-less on hover
+            color: inherit;
+            box-shadow: none; // shadow lives on the logo (drop-shadow) so it hugs the shape
+
+            .ez-logo {
+              transform: rotateY(360deg) !important; // horizontal flip on hover
+              filter: drop-shadow(0 6px 8px rgba(0, 0, 0, 0.35)); // shape-hugging shadow
+            }
+          }
         }
       }
     }

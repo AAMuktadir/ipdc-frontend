@@ -1,7 +1,13 @@
 <template>
   <div id="offer-map" class="offer-map">
     <div class="header-wrap" ref="header">
-      <h2 class="title-gradient">Unlock Offers Around You</h2>
+      <h2 class="title-gradient">
+        {{
+          $i18n.locale == "en"
+            ? "Unlock Offers Around You"
+            : "আপনার চারপাশের অফারগুলো লুফে নিন"
+        }}
+      </h2>
     </div>
     <div ref="mapContainer" class="map"></div>
   </div>
