@@ -3,5 +3,5 @@
   "buildCommand": "npm run generate",
   "outputDirectory": "dist",
   "installCommand": "npm ci",
-  "git": { "deploymentEnabled": true }
+  "git": { "deploymentEnabled": false }
 }
