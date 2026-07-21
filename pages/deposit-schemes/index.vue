@@ -1,20 +1,25 @@
+```vue
 <template>
   <div>
     <CoverImageWithButton :page="page" />
     <br />
     <ButtonOnly :buttonText="button1" />
+
     <WhatWeOffer
       :loanWhatWeOfferCards="depositSchemeOfferCard"
       :offerHeading="offerHeading"
     />
+
     <TermAmount
       :loanTermAmount="depositSchemeTermAmount"
       :termAmountHeading="termAmountHeading"
     />
+
     <BestFitsNeeds
       :depositSchemePackage="depositSchemePackage"
       :bestFitHeading="bestFitHeading"
     />
+
     <YoutubePlaylist
       :youtubePlaylists="youtubePlaylists"
       :youtubePlaylistHeading="youtube_playlist_heading"
@@ -37,6 +42,7 @@
       :employed="depositSchemeForIndividualAccount"
       :title="depositSchemeForIndividualAccountHeading"
     />
+
     <SelfEmployed
       v-if="depositSchemeForInstitutionalAccount.length"
       :selfEmployed="depositSchemeForInstitutionalAccount"
@@ -47,10 +53,12 @@
       :loanEligibilities="depositSchemeEligibility"
       :eligible-heading="eligibleHeading"
     />
+
     <ApplyNowButtonforLoan
       :termAmountHeading="loanApplyNowText"
       :buttonText="button2"
     />
+
     <Faqs :page="page" />
   </div>
 </template>
@@ -58,10 +66,17 @@
 <script>
 import { getSeoData, generateSeoHead } from "@/utils/seo";
 
+const META_TITLE =
+  "Deposit Schemes in Bangladesh - Best Interest Rates | IPDC";
+
+const META_DESCRIPTION =
+  "IPDC Deposit Schemes: Monthly Profit, Double Money, Cumulative & more. Grow savings with IPDC. Special rates for senior citizens, housewives & CAs. Apply today.";
+
 export default {
   async asyncData({ $axios }) {
     try {
       const seo = await getSeoData($axios, "deposit_scheme");
+
       return {
         seo,
       };
@@ -75,20 +90,39 @@ export default {
   },
 
   head() {
-    return generateSeoHead(this.seo);
+    const seoHead = generateSeoHead(this.seo) || {};
+    const existingMeta = Array.isArray(seoHead.meta) ? seoHead.meta : [];
+
+    return {
+      ...seoHead,
+      title: META_TITLE,
+      meta: [
+        ...existingMeta.filter(
+          (meta) => meta.hid !== "description" && meta.name !== "description"
+        ),
+        {
+          hid: "description",
+          name: "description",
+          content: META_DESCRIPTION,
+        },
+      ],
+    };
   },
+
   data() {
     return {
       cover: {
         title: "IPDC Deposit",
         title_bangla: "আইপিডিসি ডিপোজিট",
       },
+
       button1: {
         url: "/api/uploads/Deposit_Rate_Latest.pdf",
         btnTxt: "Rates for Retail Deposit Products",
         btnTxt_bn: "রিটেইল ডিপোজিট প্রডাক্ট সম্পর্কে বিস্তারিত জানুন",
         bgColor: "#ffffff",
       },
+
       offerHeading: {},
       bestFitHeading: {},
       eligibleHeading: {},
@@ -113,6 +147,7 @@ export default {
       youtube_playlist_heading: {},
       depositSchemeLearnMoreHeading: {},
       calculatorSettings: {},
+
       button2: {
         url: "/customer-signup",
         btnTxt: "Apply Now",
@@ -130,11 +165,13 @@ export default {
       },
     };
   },
+
   created() {
     this.getDepositSchemeContent();
     this.depositContent();
     this.getCalculatorSettings();
   },
+
   methods: {
     async getDepositSchemeContent() {
       const response = await this.$axios.get(
@@ -166,8 +203,10 @@ export default {
         resData.depositSchemeLearnMoreHeading[0];
 
       if (resHeading.deposit_schemes_what_we_offer_heading) {
-        this.offerHeading = resHeading.deposit_schemes_what_we_offer_heading[0];
+        this.offerHeading =
+          resHeading.deposit_schemes_what_we_offer_heading[0];
       }
+
       if (resData.depositSchemeEligibilityHeading) {
         this.eligibleHeading = resData.depositSchemeEligibilityHeading[0];
       }
@@ -189,11 +228,14 @@ export default {
           resHeading.deposit_schemes_term_amount_heading[0];
       }
     },
+
     async depositContent() {
       const response = await this.$axios.get(
         `get-youtube-playlist/${this.page}/${this.type}`
       );
+
       const resHeading = response.data.heading;
+
       this.youtubePlaylists = response.data.data;
 
       if (resHeading.deposit_schemes_youtube_playlist_heading) {
@@ -201,10 +243,12 @@ export default {
           resHeading.deposit_schemes_youtube_playlist_heading[0];
       }
     },
+
     async getCalculatorSettings() {
       const response = await this.$axios.get(
         `get-calculator-settings/${this.page}`
       );
+
       this.calculatorSettings = response.data.data;
     },
   },
@@ -218,3 +262,4 @@ export default {
   }
 }
 </style>
+```

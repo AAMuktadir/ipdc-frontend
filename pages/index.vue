@@ -19,6 +19,7 @@
         home_strongest_balance_sheet_heading
       "
     />
+
     <div>
       <b-modal id="modalAnnounce" hide-footer hide-header centered>
         <img
@@ -30,13 +31,21 @@
     </div>
   </div>
 </template>
+
 <script>
 import { getSeoData, generateSeoHead } from "@/utils/seo";
+
+const META_TITLE =
+  "IPDC Finance PLC | Bangladesh's #1 Private NBFI Since 1981";
+
+const META_DESCRIPTION =
+  "From home loans to SME finance, IPDC Finance PLC is Bangladesh's first private NBFI, trusted by individuals, entrepreneurs & corporates for 40+ years.";
 
 export default {
   async asyncData({ $axios }) {
     try {
       const seo = await getSeoData($axios, "home_page");
+
       return {
         seo,
       };
@@ -50,8 +59,25 @@ export default {
   },
 
   head() {
-    return generateSeoHead(this.seo);
+    const seoHead = generateSeoHead(this.seo) || {};
+    const existingMeta = Array.isArray(seoHead.meta) ? seoHead.meta : [];
+
+    return {
+      ...seoHead,
+      title: META_TITLE,
+      meta: [
+        ...existingMeta.filter(
+          (meta) => meta.hid !== "description" && meta.name !== "description"
+        ),
+        {
+          hid: "description",
+          name: "description",
+          content: META_DESCRIPTION,
+        },
+      ],
+    };
   },
+
   mounted() {
     this.showModal();
   },
@@ -73,6 +99,7 @@ export default {
       cover: null,
     };
   },
+
   created() {
     this.getHomePageData();
   },
@@ -80,7 +107,6 @@ export default {
   methods: {
     showModal() {
       const imageUrl = "https://ipdc.com/api/uploads/banner_active.webp";
-
       const img = new Image();
 
       img.onload = () => {
@@ -142,11 +168,13 @@ export default {
 .homepage {
   position: relative;
 }
+
 #modalAnnounce {
   .modal-image {
     width: 100%;
     box-sizing: border-box;
   }
+
   .close {
     position: absolute;
     top: 12px;
